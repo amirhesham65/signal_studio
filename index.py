@@ -20,19 +20,25 @@ class MainWindow(uiclass, baseclass):
 
     def get_signal_file(self):
         # get path of signal files only of types (xls, csv, txt)
-        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Single File', QtCore.QDir.rootPath() , "(*.xls);;(*.txt);;(*.csv)")
+        file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Single File', QtCore.QDir.rootPath() , "(*.xls);;(*.txt);;(*.csv);;(*.xlsx)")
         # check the type of signal file
         file_type = file_path.split('.')[-1]
         if file_type == 'xls':
             return self.load_xls(file_path)
+        elif file_type == 'xlsx':
+            return self.load_xlsx(file_path)
         elif file_type == 'csv':
             return self.load_csv(file_path)
         else:
             return self.load_txt(file_path)
 
+    def load_xlsx(self, file_path):
+        x = [1, 2, 3, 4, 5, 6, 7]
+        y = [1, 2, 3, 4, 5, 6, 7]
+        return x, y
+
     def load_xls(self, file_path):
         pass
-
     def load_txt(self, file_path):
         pass
 
