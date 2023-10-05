@@ -19,7 +19,8 @@ class MainWindow(uiclass, baseclass):
         # import signal to ch2
         self.import_signal_ch2.triggered.connect(self.get_signal_file)
         #draw on play
-        self.actionPlay_Pause.triggered.connect( lambda : self.draw())
+        self.actionPlay_Pause.triggered.connect(self.draw)
+        self.play_button_1.clicked.connect(self.draw)
 
     def get_signal_file(self):
         # get path of signal files only of types (xls, csv, txt)
@@ -51,7 +52,7 @@ class MainWindow(uiclass, baseclass):
 
     def draw(self):
         self.pen = pg.mkPen(color=(255,0,0))
-        self.x1 , self.y1 = self.load_xlsx("None for now")
+        self.x1 , self.y1 = [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5 ,6]
         self.widget.plot(self.x1,self.y1, pen=self.pen)
 def main():
     app = QApplication(sys.argv)
