@@ -9,6 +9,7 @@ class MainWindow(uiclass, baseclass):
         super().__init__()
         self.setupUi(self)
         
+        
 
 app = QApplication(sys.argv)
 window = MainWindow()
