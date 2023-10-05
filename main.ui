@@ -457,7 +457,7 @@ QScrollBar::handle:horizontal {
        <number>7</number>
       </property>
       <item>
-       <widget class="PlotWidget" name="widget" native="true"/>
+       <widget class="PlotWidget" name="widget"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
@@ -516,7 +516,7 @@ QScrollBar::handle:horizontal {
        <number>7</number>
       </property>
       <item>
-       <widget class="PlotWidget" name="widget_2" native="true"/>
+       <widget class="PlotWidget" name="widget_2"/>
       </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -584,25 +584,25 @@ QScrollBar::handle:horizontal {
     <property name="title">
      <string>Channel 1</string>
     </property>
-    <addaction name="actionImport"/>
+    <addaction name="import_signal_ch1"/>
     <addaction name="actionExport_signal"/>
     <addaction name="actionPlay_Pause"/>
-    <addaction name="actionClear"/>
+    <addaction name="clear_signal_ch1"/>
    </widget>
    <widget class="QMenu" name="menuChannel_2">
     <property name="title">
      <string>Channel 2</string>
     </property>
-    <addaction name="actionImport_signals"/>
+    <addaction name="import_signal_ch2"/>
     <addaction name="actionExport_signal_2"/>
     <addaction name="actionPlay_Pause_2"/>
-    <addaction name="actionClear_2"/>
+    <addaction name="clear_signal_ch2"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuChannel_2"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionImport">
+  <action name="import_signal_ch1">
    <property name="text">
     <string>Import signal</string>
    </property>
@@ -617,12 +617,12 @@ QScrollBar::handle:horizontal {
     <string>Play/Pause</string>
    </property>
   </action>
-  <action name="actionClear">
+  <action name="clear_signal_ch1">
    <property name="text">
     <string>Clear</string>
    </property>
   </action>
-  <action name="actionImport_signals">
+  <action name="import_signal_ch2">
    <property name="text">
     <string>Import signal</string>
    </property>
@@ -637,7 +637,7 @@ QScrollBar::handle:horizontal {
     <string>Play/Pause</string>
    </property>
   </action>
-  <action name="actionClear_2">
+  <action name="clear_signal_ch2">
    <property name="text">
     <string>Clear</string>
    </property>
@@ -646,7 +646,7 @@ QScrollBar::handle:horizontal {
  <customwidgets>
   <customwidget>
    <class>PlotWidget</class>
-   <extends>QWidget</extends>
+   <extends>QGraphicsView</extends>
    <header>pyqtgraph</header>
    <container>1</container>
   </customwidget>
