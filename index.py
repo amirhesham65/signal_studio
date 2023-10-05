@@ -35,7 +35,7 @@ class MainWindow(uiclass, baseclass):
     def load_xlsx(self, file_path):
         x = [1, 2, 3, 4, 5, 6, 7]
         y = [1, 2, 3, 4, 5, 6, 7]
-        return x, y
+        return (x, y)
 
     def load_xls(self, file_path):
         pass
