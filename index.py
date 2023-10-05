@@ -3,6 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMessageBox
 import pyqtgraph as pg
 import pandas as pd
+from pyqtgraph import PlotWidget
 
 uiclass, baseclass = pg.Qt.loadUiType("main.ui")
 
@@ -17,6 +18,8 @@ class MainWindow(uiclass, baseclass):
         self.import_signal_ch1.triggered.connect(self.get_signal_file)
         # import signal to ch2
         self.import_signal_ch2.triggered.connect(self.get_signal_file)
+        #draw on play
+        self.actionPlay_Pause.triggered.connect( lambda : self.draw())
 
     def get_signal_file(self):
         # get path of signal files only of types (xls, csv, txt)
@@ -45,6 +48,11 @@ class MainWindow(uiclass, baseclass):
     def load_csv(self, file_path):
         pass
 
+
+    def draw(self):
+        self.pen = pg.mkPen(color=(255,0,0))
+        self.x1 , self.y1 = self.load_xlsx("None for now")
+        self.widget.plot(self.x1,self.y1, pen=self.pen)
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
