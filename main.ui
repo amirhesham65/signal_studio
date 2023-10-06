@@ -464,22 +464,41 @@ QListWidget {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,1,1,1,1">
         <property name="spacing">
          <number>30</number>
         </property>
         <property name="leftMargin">
-         <number>50</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>50</number>
+         <number>20</number>
         </property>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QPushButton" name="play_button_1">
           <property name="minimumSize">
            <size>
             <width>120</width>
             <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="text">
@@ -493,6 +512,12 @@ QListWidget {
            <size>
             <width>120</width>
             <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="text">
@@ -521,6 +546,12 @@ QListWidget {
             <height>40</height>
            </size>
           </property>
+          <property name="maximumSize">
+           <size>
+            <width>80</width>
+            <height>16777215</height>
+           </size>
+          </property>
           <property name="text">
            <string>1x</string>
           </property>
@@ -546,22 +577,41 @@ QListWidget {
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,1,1,1">
         <property name="spacing">
          <number>30</number>
         </property>
         <property name="leftMargin">
-         <number>50</number>
+         <number>0</number>
         </property>
         <property name="rightMargin">
-         <number>50</number>
+         <number>30</number>
         </property>
+        <item>
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QPushButton" name="play_button_2">
           <property name="minimumSize">
            <size>
             <width>120</width>
             <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="text">
@@ -575,6 +625,12 @@ QListWidget {
            <size>
             <width>120</width>
             <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>150</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="text">
@@ -601,6 +657,12 @@ QListWidget {
            <size>
             <width>80</width>
             <height>40</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>40</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="text">
