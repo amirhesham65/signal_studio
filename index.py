@@ -185,10 +185,16 @@ class MainWindow(uiclass, baseclass):
             self.speed_button_2.setText(str(self.speed_2) + 'x')  
 
     def clear_1(self):  
-        self.widget.clear()     
+        self.widget.clear()
+        self.is_plotting_1 = False
+        self.timer_1.stop()  # Update every 1 ms
+        self.play_button_1.setText('Play')     
 
     def clear_2(self):  
-        self.widget_2.clear()     
+        self.widget_2.clear()    
+        self.is_plotting_2 = False
+        self.timer_2.stop()  # Update every 1 ms
+        self.play_button_2.setText('Play') 
 
 
 def main():
