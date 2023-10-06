@@ -17,14 +17,19 @@ class MainWindow(uiclass, baseclass):
 
     def handle_events(self):
         # import signal to ch1
-        self.import_signal_ch1.triggered.connect(self.get_signal_file)
+        self.import_signal_ch1.triggered.connect(self.import_signal_channel_1)
         # import signal to ch2
-        self.import_signal_ch2.triggered.connect(self.get_signal_file)
-        # draw on play
-        # self.actionPlay_Pause.triggered.connect(self.draw)
-        # self.play_button_1.clicked.connect(self.draw)
+        self.import_signal_ch2.triggered.connect(self.import_signal_channel_2)
 
-    def get_signal_file(self):
+    def import_signal_channel_1(self):
+        signal: Signal = self.get_signal_from_file()
+        self.render_signal_to_channel(channel=self.widget, signal=signal)
+    
+    def import_signal_channel_2(self):
+        signal: Signal = self.get_signal_from_file()
+        self.render_signal_to_channel(channel=self.widget_2, signal=signal)
+
+    def get_signal_from_file(self):
         # get path of signal files only of types (xls, csv, txt)
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(self, 'Single File', QtCore.QDir.rootPath(), "(*.xls);;(*.txt);;(*.csv);;(*.xlsx)")
 
@@ -43,12 +48,11 @@ class MainWindow(uiclass, baseclass):
             loader = TextSignalLoader()
         
         signal: Signal = loader.load(file_path)
-        self.draw(signal.x_vec, signal.y_vec)
+        return signal
 
-    def draw(self, x, y):
-        self.pen = pg.mkPen(color=(255, 0, 0))
-        self.x1, self.y1 = x, y
-        self.widget.plot(self.x1, self.y1, pen=self.pen)
+    def render_signal_to_channel(self, channel, signal: Signal) -> None:
+        pen = pg.mkPen(color=signal.color.value)
+        channel.plot(signal.x_vec, signal.y_vec, pen=pen)
 
 
 def main():
