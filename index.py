@@ -1,3 +1,4 @@
+from math import floor
 import sys
 from PyQt6 import QtCore, QtGui, QtWidgets
 from PyQt6.QtWidgets import QApplication, QMessageBox
@@ -28,6 +29,17 @@ class MainWindow(uiclass, baseclass):
         self.timer_2 = QTimer(self)
         self.timer_2.timeout.connect(self.update_plot_2)
         self.is_plotting_2 = False  # Flag to control real-time plotting
+        self.play_button_1.clicked.connect(self.play_pause_1)
+        self.speed_1 = 1     # Speed of channel 1
+        self.speed_button_1.clicked.connect(self.change_speed_1)
+        self.play_button_2.clicked.connect(self.play_pause_2)
+        self.speed_2 = 1     # Speed of channel 1
+        self.speed_button_2.clicked.connect(self.change_speed_2)
+        self.clear_button_1.clicked.connect(self.clear_1)
+        self.clear_button_2.clicked.connect(self.clear_2)
+        self.import_signal_ch2.triggered.connect(self.import_signal_channel_2)
+        self.actionPlay_Pause.triggered.connect(self.play_pause_1)
+        self.actionPlay_Pause_2.triggered.connect(self.play_pause_2)
 
 
     def import_signal_channel_1(self):
@@ -70,9 +82,9 @@ class MainWindow(uiclass, baseclass):
         self.curve_1 = curve_1
         self.data_index_1 = 0
 
-        # Start the real-time plot
-        self.is_plotting_1 = True
-        self.timer_1.start(1)  # Update every 1 ms
+        # # Start the real-time plot
+        # self.is_plotting_1 = True
+        # self.timer_1.start(1)  # Update every 1 ms
 
     def render_signal_to_channel_2(self, channel, signal):
         # Set up the initial plot
@@ -86,31 +98,97 @@ class MainWindow(uiclass, baseclass):
         self.data_index_2 = 0
 
         # Start the real-time plot
-        self.is_plotting_2 = True
-        self.timer_2.start(1)  # Update every 1 ms
-
+        # self.is_plotting_2 = True
+        # self.timer_2.start(1)  # Update every 1 ms
     def update_plot_1(self):
        if self.is_plotting_1:
             if self.data_index_1 < len(self.x_vec_1):
                 x_data = self.x_vec_1[:self.data_index_1 + 1]
                 y_data = self.y_vec_1[:self.data_index_1 + 1]
+                if(x_data[-1] < 1):
+                    self.widget.setXRange(0, 1)
+                else:    
+                    self.widget.setXRange(x_data[-1]-1, x_data[-1])
                 self.curve_1.setData(x_data, y_data)
-                self.data_index_1 += 1
+                self.data_index_1 += 1     
             else:
                 self.is_plotting_1 = False
                 self.timer_1.stop()  # Stop the QTimer when all data is plotted untill we know what to do when finished
+                self.play_button_1.setText('Rewind')
 
     def update_plot_2(self):
        if self.is_plotting_2:
             if self.data_index_2 < len(self.x_vec_2):
                 x_data = self.x_vec_2[:self.data_index_2 + 1]
                 y_data = self.y_vec_2[:self.data_index_2 + 1]
+                if(x_data[-1] < 1):
+                    self.widget_2.setXRange(0, 1)
+                else:    
+                    self.widget_2.setXRange(x_data[-1]-1, x_data[-1])
                 self.curve_2.setData(x_data, y_data)
                 self.data_index_2 += 1
             else:
                 self.is_plotting_2 = False
                 self.timer_2.stop()  # Stop the QTimer when all data is plotted untill we know what to do when finished
+                self.play_button_2.setText('Rewind')
         
+    def play_pause_1(self):
+        if(self.data_index_1 >= len(self.x_vec_1)):
+           self.data_index_1 = 0
+           self.is_plotting_1 = True
+           self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
+           self.play_button_1.setText('Pause')    
+        elif(self.is_plotting_1):
+           self.is_plotting_1 = False
+           self.timer_1.stop()  # Update every 1 ms
+           self.play_button_1.setText('Play')
+        else:
+           self.is_plotting_1 = True
+           self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
+           self.play_button_1.setText('Pause')    
+
+
+    def change_speed_1(self):
+        if(self.speed_1 == 8):
+            self.speed_1 = 1
+            self.timer_1.start(floor( 8/self.speed_1))
+            self.speed_button_1.setText(str(self.speed_1) + 'x')   
+        else:
+            self.speed_1 *= 2
+            self.timer_1.start(floor( 8/self.speed_1))
+            self.speed_button_1.setText(str(self.speed_1) + 'x')  
+
+    def play_pause_2(self):
+        if(self.data_index_2 >= len(self.x_vec_2)):
+           self.data_index_2 = 0
+           self.is_plotting_2 = True
+           self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
+           self.play_button_2.setText('Pause')    
+        elif(self.is_plotting_2):
+           self.is_plotting_2 = False
+           self.timer_2.stop()  # Update every 1 ms
+           self.play_button_2.setText('Play')
+        else:
+           self.is_plotting_2 = True
+           self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
+           self.play_button_2.setText('Pause')    
+
+
+    def change_speed_2(self):
+        if(self.speed_2 == 8):
+            self.speed_2 = 1
+            self.timer_2.start(floor( 8/self.speed_2))
+            self.speed_button_1.setText(str(self.speed_2) + 'x')   
+        else:
+            self.speed_2 *= 2
+            self.timer_2.start(floor( 8/self.speed_2))
+            self.speed_button_2.setText(str(self.speed_2) + 'x')  
+
+    def clear_1(self):  
+        self.widget.clear()     
+
+    def clear_2(self):  
+        self.widget_2.clear()     
 
 
 def main():
