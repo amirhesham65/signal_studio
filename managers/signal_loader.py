@@ -32,4 +32,7 @@ class ExcelXSignalLoader(ISignalLoader):
     
 class ExcelSignalLoader(ISignalLoader):
     def load(self, file_path: str) -> Signal:
-        pass
+        data = pd.read_excel(file_path, header=None, engine="xlrd")
+        x = data.iloc[:, 0].values
+        y = data.iloc[:, 1].values
+        return Signal(x, y)
