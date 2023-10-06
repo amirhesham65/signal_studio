@@ -18,7 +18,10 @@ class TextSignalLoader(ISignalLoader):
     
 class CSVSignalLoader(ISignalLoader):
     def load(self, file_path: str) -> Signal:
-        pass
+        data = pd.read_csv(file_path, skiprows=2)
+        x = data.iloc[:, 0].values
+        y = data.iloc[:, 1].values
+        return Signal(x, y)
 
 class ExcelXSignalLoader(ISignalLoader):
     def load(self, file_path: str) -> Signal:
