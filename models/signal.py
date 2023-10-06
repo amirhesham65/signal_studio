@@ -10,10 +10,10 @@ class Signal:
 
 
 class SignalColor(Enum):
-    DEFAULT = 0
-    RED = 1
-    BLUE = 2
-    GREEN = 3
-    YELLOW = 4
-    ORAGNE = 5
-    PURPLE = 6
+    DEFAULT = (255,255,255)
+    RED = (255, 0, 0)
+    BLUE = (30,144,255)
+    GREEN = (173,255,47)
+    YELLOW = (255,255,0)
+    ORAGNE = (255,165,0)
+    PURPLE = (255,0,255)
