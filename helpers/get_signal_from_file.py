@@ -6,7 +6,8 @@ from models.signal import Signal
 def get_signal_from_file(app):
         # get path of signal files only of types (xls, csv, txt)
         file_path, _ = QtWidgets.QFileDialog.getOpenFileName(app, 'Single File', QtCore.QDir.rootPath(), "(*.csv);;(*.txt);;(*.xls);;(*.xlsx)")
-
+        if not file_path:
+            return None
         # check the type of signal file
         file_type = file_path.split('.')[-1]
 
