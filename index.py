@@ -41,6 +41,15 @@ class MainWindow(uiclass, baseclass):
         self.actionPlay_Pause.triggered.connect(self.play_pause_1)
         self.actionPlay_Pause_2.triggered.connect(self.play_pause_2)
 
+        # Prevent zooming and paning
+        self.widget.setMouseEnabled(x=False, y=False)
+        self.widget_2.setMouseEnabled(x=False, y=False)
+
+        self.channel1_slider.valueChanged.connect(self.on_channel_1_slider_change)
+
+    def on_channel_1_slider_change(self, value):
+        self.widget.setXRange(value - 1, value)
+
 
     def import_signal_channel_1(self):
         signal: Signal = self.get_signal_from_file()
@@ -82,9 +91,15 @@ class MainWindow(uiclass, baseclass):
         self.curve_1 = curve_1
         self.data_index_1 = 0
 
-        # # Start the real-time plot
-        # self.is_plotting_1 = True
-        # self.timer_1.start(1)  # Update every 1 ms
+        # Fix the y-limit (prevent auto vertical zooming)
+        y_limit_min, y_limit_max = curve_1.dataBounds(1)
+        self.widget.setYRange(y_limit_min, y_limit_max)
+
+        # Initialize the slider with the right values
+        _, x_limit_max = curve_1.dataBounds(0)
+        self.channel1_slider.setMinimum(1)
+        self.channel1_slider.setMaximum(int(x_limit_max))
+        
 
     def render_signal_to_channel_2(self, channel, signal):
         # Set up the initial plot
@@ -97,9 +112,10 @@ class MainWindow(uiclass, baseclass):
         self.curve_2 = curve_2
         self.data_index_2 = 0
 
-        # Start the real-time plot
-        # self.is_plotting_2 = True
-        # self.timer_2.start(1)  # Update every 1 ms
+        # Fix the y-limit (prevent auto vertical zooming)
+        y_limit_min, y_limit_max = curve_2.dataBounds(1)
+        self.widget.setYRange(y_limit_min, y_limit_max)
+
     def update_plot_1(self):
        if self.is_plotting_1:
             if self.data_index_1 < len(self.x_vec_1):
@@ -109,6 +125,9 @@ class MainWindow(uiclass, baseclass):
                     self.widget.setXRange(0, 1)
                 else:    
                     self.widget.setXRange(x_data[-1]-1, x_data[-1])
+                    print(x_data[-1])
+                self.channel1_slider.setValue(int(x_data[-1]))
+                self.channel1_slider.repaint()
                 self.curve_1.setData(x_data, y_data)
                 self.data_index_1 += 1     
             else:
@@ -147,7 +166,6 @@ class MainWindow(uiclass, baseclass):
            self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
            self.play_button_1.setText('Pause')    
 
-
     def change_speed_1(self):
         if(self.speed_1 == 8):
             self.speed_1 = 1
@@ -172,7 +190,6 @@ class MainWindow(uiclass, baseclass):
            self.is_plotting_2 = True
            self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
            self.play_button_2.setText('Pause')    
-
 
     def change_speed_2(self):
         if(self.speed_2 == 8):
