@@ -1,5 +1,6 @@
 from enum import Enum
-
+import numpy as np
+from scipy import stats
 class Signal:
     # TODO: Define the types of x_vec, y_vec
     def __init__(self, x_vec, y_vec) -> None:
@@ -7,6 +8,15 @@ class Signal:
         self.color = SignalColor.DEFAULT
         self.x_vec = x_vec
         self.y_vec = y_vec
+
+    def get_statistics(self):
+        mean = np.mean(self.y_vec)
+        median = np.median(self.y_vec)
+        std = np.std(self.y_vec)
+        mode = stats.mode(self.y_vec)
+        max_value = max(self.y_vec)
+        min_value = min(self.x_vec)
+        return mean, median, mode, std, max_value, min_value
 
 
 class SignalColor(Enum):
