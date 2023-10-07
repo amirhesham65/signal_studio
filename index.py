@@ -170,19 +170,22 @@ class MainWindow(uiclass, baseclass):
             self.speed_button_1.setText(str(self.speed_1) + 'x')  
 
     def play_pause_2(self):
-        if(self.data_index_2 >= len(self.x_vec_2)):
-           self.data_index_2 = 0
-           self.is_plotting_2 = True
-           self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
-           self.play_button_2.setText('Pause')    
-        elif(self.is_plotting_2):
-           self.is_plotting_2 = False
-           self.timer_2.stop()  # Update every 1 ms
-           self.play_button_2.setText('Play')
-        else:
-           self.is_plotting_2 = True
-           self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
-           self.play_button_2.setText('Pause')    
+        try:
+            if(self.data_index_2 >= len(self.x_vec_2)):
+               self.data_index_2 = 0
+               self.is_plotting_2 = True
+               self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
+               self.play_button_2.setText('Pause')
+            elif(self.is_plotting_2):
+               self.is_plotting_2 = False
+               self.timer_2.stop()  # Update every 1 ms
+               self.play_button_2.setText('Play')
+            else:
+               self.is_plotting_2 = True
+               self.timer_2.start(floor( 8/self.speed_2))  # Update every 1 ms
+               self.play_button_2.setText('Pause')
+        except Exception:
+            QMessageBox.warning(self, "Warning", "Select the data first!")
 
     def change_speed_2(self):
         if(self.speed_2 == 8):
