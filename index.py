@@ -61,7 +61,8 @@ class MainWindow(uiclass, baseclass):
     
     def import_signal_channel_2(self):
         signal: Signal = get_signal_from_file(self)
-        self.render_signal_to_channel_2(channel=self.widget_2, signal=signal)
+        if signal is not None:
+            self.render_signal_to_channel_2(channel=self.widget_2, signal=signal)
 
     def render_signal_to_channel_1(self, channel, signal):
         # Set up the initial plot
