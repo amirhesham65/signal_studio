@@ -193,13 +193,23 @@ class MainWindow(uiclass, baseclass):
         self.widget.clear()
         self.is_plotting_1 = False
         self.timer_1.stop()  # Update every 1 ms
-        self.play_button_1.setText('Play')     
+        self.play_button_1.setText('Play')
+        # reset x, y asix
+        self.on_channel_1_slider_change(1)
+        self.initialize_signals_slots()
+        # reset slider
+        self.channel1_slider.setValue(1)
 
     def clear_2(self):  
         self.widget_2.clear()    
         self.is_plotting_2 = False
         self.timer_2.stop()  # Update every 1 ms
-        self.play_button_2.setText('Play') 
+        self.play_button_2.setText('Play')
+        # reset x, y asix
+        self.on_channel_2_slider_change(1)
+        self.initialize_signals_slots()
+        # reset slider
+        self.channel2_slider.setValue(1)
 
 
 def main():
