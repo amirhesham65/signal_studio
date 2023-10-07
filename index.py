@@ -1,6 +1,6 @@
 import sys
 from math import floor
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer
 import pyqtgraph as pg
 from models.signal import Signal
@@ -142,19 +142,22 @@ class MainWindow(uiclass, baseclass):
                 self.play_button_2.setText('Rewind')
         
     def play_pause_1(self):
-        if(self.data_index_1 >= len(self.x_vec_1)):
-           self.data_index_1 = 0
-           self.is_plotting_1 = True
-           self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
-           self.play_button_1.setText('Pause')    
-        elif(self.is_plotting_1):
-           self.is_plotting_1 = False
-           self.timer_1.stop()  # Update every 1 ms
-           self.play_button_1.setText('Play')
-        else:
-           self.is_plotting_1 = True
-           self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
-           self.play_button_1.setText('Pause')    
+        try:
+            if(self.data_index_1 >= len(self.x_vec_1)):
+               self.data_index_1 = 0
+               self.is_plotting_1 = True
+               self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
+               self.play_button_1.setText('Pause')
+            elif(self.is_plotting_1):
+               self.is_plotting_1 = False
+               self.timer_1.stop()  # Update every 1 ms
+               self.play_button_1.setText('Play')
+            else:
+               self.is_plotting_1 = True
+               self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
+               self.play_button_1.setText('Pause')
+        except Exception:
+            QMessageBox.warning(self, "Warning", "Select the data first!")
 
     def change_speed_1(self):
         if(self.speed_1 == 8):
@@ -200,7 +203,7 @@ class MainWindow(uiclass, baseclass):
         self.on_channel_1_slider_change(1)
         self.initialize_signals_slots()
         # reset slider
-        self.channel1_slider.setValue(1)
+        self.channel1_slider.setValue(0)
 
     def clear_2(self):  
         self.widget_2.clear()    
@@ -211,7 +214,7 @@ class MainWindow(uiclass, baseclass):
         self.on_channel_2_slider_change(1)
         self.initialize_signals_slots()
         # reset slider
-        self.channel2_slider.setValue(1)
+        self.channel2_slider.setValue(0)
 
 
 def main():
