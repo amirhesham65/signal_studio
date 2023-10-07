@@ -1,7 +1,7 @@
 import sys
 from math import floor
 from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTimer
+from PyQt6.QtCore import QTimer, Qt
 import pyqtgraph as pg
 from models.signal import Signal
 from helpers.get_signal_from_file import get_signal_from_file
@@ -39,6 +39,7 @@ class MainWindow(uiclass, baseclass):
         self.clear_button_1.clicked.connect(self.clear_1)
         self.actionPlay_Pause.triggered.connect(self.play_pause_1)
         self.channel1_slider.valueChanged.connect(self.on_channel_1_slider_change)
+        self.hide_channel_1_chk.stateChanged.connect(self.toggle_channel_1)
 
         # Channel 2
         self.import_signal_ch2.triggered.connect(self.import_signal_channel_2) 
@@ -48,6 +49,13 @@ class MainWindow(uiclass, baseclass):
         self.clear_button_2.clicked.connect(self.clear_2)
         self.actionPlay_Pause_2.triggered.connect(self.play_pause_2)
         self.channel2_slider.valueChanged.connect(self.on_channel_2_slider_change)
+        self.hide_channel_2_chk.stateChanged.connect(self.toggle_channel_2)
+
+    def toggle_channel_1(self, state):
+        self.channel_1.setVisible(state == 0)
+
+    def toggle_channel_2(self, state):
+        self.channel_2.setVisible(state == 0)
 
     def on_channel_1_slider_change(self, value):
         self.widget.setXRange(value - 1, value)
