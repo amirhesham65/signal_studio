@@ -458,7 +458,7 @@ QListWidget {
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="channel_1" native="true">
+       <widget class="QWidget" name="channel_1_container" native="true">
         <layout class="QVBoxLayout" name="channel_1_layout">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,4">
@@ -619,7 +619,7 @@ QListWidget {
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="channel_2" native="true">
+       <widget class="QWidget" name="channel_2_container" native="true">
         <layout class="QVBoxLayout" name="channel_1_layout_2">
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,4">

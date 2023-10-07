@@ -1,11 +1,8 @@
 import sys
-from math import floor
-from PyQt6.QtWidgets import QApplication, QMessageBox
+from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QTimer, Qt
 import pyqtgraph as pg
-from models.signal import Signal
 from models.channel import Channel
-from helpers.get_signal_from_file import get_signal_from_file
 
 uiclass, baseclass = pg.Qt.loadUiType("main.ui")
 
@@ -47,10 +44,19 @@ class MainWindow(uiclass, baseclass):
         # Channel 1
         self.import_signal_ch1.triggered.connect(self.channel_1.import_signal_channel)
         self.actionPlay_Pause.triggered.connect(self.channel_1.play_pause)
+        self.hide_channel_1_chk.stateChanged.connect(self.toggle_channel_1)
 
         # Channel 2
         self.import_signal_ch2.triggered.connect(self.channel_2.import_signal_channel) 
         self.actionPlay_Pause_2.triggered.connect(self.channel_2.play_pause)
+        self.hide_channel_2_chk.stateChanged.connect(self.toggle_channel_2)
+    
+    def toggle_channel_1(self, state):
+        self.channel_1_container.setVisible(state == 0)
+
+    def toggle_channel_2(self, state):
+        self.channel_2_container.setVisible(state == 0)
+
 
 
 def main():
