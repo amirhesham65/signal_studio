@@ -1,6 +1,6 @@
 import sys
 from math import floor
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QMessageBox
 from PyQt6.QtCore import QTimer, Qt
 import pyqtgraph as pg
 from models.signal import Signal
@@ -57,7 +57,8 @@ class MainWindow(uiclass, baseclass):
 
     def import_signal_channel_1(self):
         signal: Signal = get_signal_from_file(self)
-        self.render_signal_to_channel_1(channel=self.widget, signal=signal)
+        if signal is not None:
+            self.render_signal_to_channel_1(channel=self.widget, signal=signal)
     
     def import_signal_channel_2(self):
         signal: Signal = get_signal_from_file(self)
@@ -141,19 +142,22 @@ class MainWindow(uiclass, baseclass):
                 self.play_button_2.setText('Rewind')
         
     def play_pause_1(self):
-        if(self.data_index_1 >= len(self.x_vec_1)):
-           self.data_index_1 = 0
-           self.is_plotting_1 = True
-           self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
-           self.play_button_1.setText('Pause')    
-        elif(self.is_plotting_1):
-           self.is_plotting_1 = False
-           self.timer_1.stop()  # Update every 1 ms
-           self.play_button_1.setText('Play')
-        else:
-           self.is_plotting_1 = True
-           self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
-           self.play_button_1.setText('Pause')    
+        try:
+            if(self.data_index_1 >= len(self.x_vec_1)):
+               self.data_index_1 = 0
+               self.is_plotting_1 = True
+               self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
+               self.play_button_1.setText('Pause')
+            elif(self.is_plotting_1):
+               self.is_plotting_1 = False
+               self.timer_1.stop()  # Update every 1 ms
+               self.play_button_1.setText('Play')
+            else:
+               self.is_plotting_1 = True
+               self.timer_1.start(floor( 8/self.speed_1))  # Update every 1 ms
+               self.play_button_1.setText('Pause')
+        except Exception:
+            QMessageBox.warning(self, "Warning", "Select the data first!")
 
     def change_speed_1(self):
         if(self.speed_1 == 8):
@@ -194,13 +198,23 @@ class MainWindow(uiclass, baseclass):
         self.widget.clear()
         self.is_plotting_1 = False
         self.timer_1.stop()  # Update every 1 ms
-        self.play_button_1.setText('Play')     
+        self.play_button_1.setText('Play')
+        # reset x, y asix
+        self.on_channel_1_slider_change(1)
+        self.initialize_signals_slots()
+        # reset slider
+        self.channel1_slider.setValue(0)
 
     def clear_2(self):  
         self.widget_2.clear()    
         self.is_plotting_2 = False
         self.timer_2.stop()  # Update every 1 ms
-        self.play_button_2.setText('Play') 
+        self.play_button_2.setText('Play')
+        # reset x, y asix
+        self.on_channel_2_slider_change(1)
+        self.initialize_signals_slots()
+        # reset slider
+        self.channel2_slider.setValue(0)
 
 
 def main():
