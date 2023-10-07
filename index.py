@@ -21,7 +21,8 @@ class MainWindow(uiclass, baseclass):
             play_button = self.play_button_1,
             speed_button=self.speed_button_1,
             clear_button=self.clear_button_1,
-            timer=self.timer_1
+            timer=self.timer_1,
+            signals_list=self.signals_list_1
         )
 
         self.channel_2 = Channel(
@@ -31,7 +32,8 @@ class MainWindow(uiclass, baseclass):
             play_button = self.play_button_2,
             speed_button=self.speed_button_2,
             clear_button=self.clear_button_2,
-            timer=self.timer_2
+            timer=self.timer_2,
+            signals_list=self.signals_list_2
         )
 
         self.initialize_signals_slots()

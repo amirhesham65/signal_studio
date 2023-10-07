@@ -1,14 +1,17 @@
 from math import floor
-from PyQt6.QtWidgets import QMessageBox
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 import pyqtgraph as pg
-from models.signal import Signal
+from models.signal import Signal, SignalColor
 from helpers.get_signal_from_file import get_signal_from_file
 
 class Channel:
-    def __init__(self, app, plot_widget, slider, play_button, speed_button, clear_button, timer) -> None:
+    def __init__(self, app, plot_widget, slider, play_button, speed_button, clear_button, timer, signals_list) -> None:
         self.app = app
         self.is_plotting = False
         self.speed = 1
+        self.y_min = None
+        self.y_max = None
         
         self.plot_widget = plot_widget
         self.slider = slider
@@ -16,6 +19,7 @@ class Channel:
         self.speed_button = speed_button
         self.clear_button = clear_button
         self.timer = timer
+        self.signals_list = signals_list
 
         self.initialize_signals_slots()
 
@@ -31,8 +35,43 @@ class Channel:
 
     def import_signal_channel(self):
         signal: Signal = get_signal_from_file(self.app)
+
         if signal is not None:
-            self.render_signal_to_channel(signal=signal)
+            dialog = QDialog(self.app)
+            dialog.resize(400, 100)
+
+            # Building the dialog content
+            dialog_layout = QVBoxLayout()
+            signal_input =  QLineEdit()
+            signal_color_cb =  QComboBox()
+            add_button =  QPushButton("Add Signal")
+            
+            signal_color_cb.addItems(["White", "Red", "Blue"])
+            dialog_layout.addWidget(signal_input)
+            dialog_layout.addWidget(signal_color_cb)
+            dialog_layout.addWidget(add_button)
+            dialog_layout.addStretch()
+            dialog.setLayout(dialog_layout)
+
+            def add_signal():
+                if signal_input.text():
+                    signal.title = signal_input.text()
+                if signal_color_cb.currentText() == "Blue":
+                    signal.color = SignalColor.BLUE
+                elif signal_color_cb.currentText() == "Red":
+                    signal.color = SignalColor.RED
+                else:
+                    signal.color = SignalColor.GREEN
+                print(signal_color_cb.currentText())
+                item = QListWidgetItem(signal.title)
+                item.setBackground(QColor(*(signal.color.value)))
+                self.render_signal_to_channel(signal=signal)
+                self.signals_list.addItem(item)
+                dialog.close()
+            add_button.clicked.connect(add_signal)
+
+            dialog.exec()
+               
 
     def render_signal_to_channel(self, signal):
         # Set up the initial plot
@@ -47,7 +86,13 @@ class Channel:
 
         # Fix the y-limit (prevent auto vertical zooming)
         y_limit_min, y_limit_max = curve.dataBounds(1)
-        self.plot_widget.setYRange(y_limit_min, y_limit_max)
+        if self.y_min is None and self.y_max is None:
+            self.y_min = y_limit_min
+            self.y_max = y_limit_max
+        else:
+            self.y_min = min(self.y_min, y_limit_min)
+            self.y_max = max(self.y_max, y_limit_max)
+        self.plot_widget.setYRange(self.y_min, self.y_max)
 
         # Initialize the slider with the right values
         _, x_limit_max = curve.dataBounds(0)
