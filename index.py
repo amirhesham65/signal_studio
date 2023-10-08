@@ -120,6 +120,8 @@ class MainWindow(uiclass, baseclass):
 
             if action == action2:
                 self.channel_2.remove_signal(selected_index)
+            if len(self.channel_2.signals_list) == 0:
+                self.channel_2.clear()
 
     def item_menu_2(self, item, index):
 
