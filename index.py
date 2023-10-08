@@ -45,7 +45,8 @@ class MainWindow(uiclass, baseclass):
         )
 
         self.initialize_signals_slots()
-
+        self.sync_button.clicked.connect(self.sync_channels)
+        self.sync = False
         # Prevent zooming and paning
         self.widget.setMouseEnabled(x=False, y=False)
         self.widget_2.setMouseEnabled(x=False, y=False)
@@ -146,6 +147,33 @@ class MainWindow(uiclass, baseclass):
         self.channel_2.signals.pop(index)
         self.channel_2.signals_list.takeItem(index)
 
+
+    def sync_channels(self):
+        self.sync = not self.sync
+        if self.sync:
+            # deactivate channel 2 contorls
+            self.channel_2.play_button.hide()
+            self.channel_2.clear_button.hide()
+            self.channel_2.speed_button.hide()
+
+            # trigger both channels with channel 1 controls
+            #some code
+
+            # hide play/pause & clear action menue
+            self.actionPlay_Pause.setVisible(False)
+            self.actionPlay_Pause_2.setVisible(False)
+            self.clear_signal_ch1.setVisible(False)
+            self.clear_signal_ch2.setVisible(False)
+            self.sync_button.setText("unsync")
+        else:
+            self.channel_2.play_button.show()
+            self.channel_2.clear_button.show()
+            self.channel_2.speed_button.show()
+            self.actionPlay_Pause.setVisible(True)
+            self.actionPlay_Pause_2.setVisible(True)
+            self.clear_signal_ch1.setVisible(False)
+            self.clear_signal_ch2.setVisible(False)
+            self.sync_button.setText("sync")
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()

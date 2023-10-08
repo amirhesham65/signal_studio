@@ -46,9 +46,9 @@ class Channel:
 
             # Building the dialog content
             dialog_layout = QVBoxLayout()
-            signal_input =  QLineEdit()
-            signal_color_cb =  QComboBox()
-            add_button =  QPushButton("Add Signal")
+            signal_input = QLineEdit()
+            signal_color_cb = QComboBox()
+            add_button = QPushButton("Add Signal")
             
             signal_color_cb.addItems(["White", "Red", "Blue"])
             dialog_layout.addWidget(signal_input)
@@ -146,6 +146,10 @@ class Channel:
             except Exception:
                 QMessageBox.warning(self.app, "Warning", "Select the data first!")
 
+
+        # if self.app.sync:  Recurssion Error
+        #     self.app.channel_2.play_pause()
+
     def change_speed(self):
         if(self.speed == 8):
             self.speed = 1
@@ -154,7 +158,11 @@ class Channel:
         else:
             self.speed *= 2
             self.timer.start(floor( 8/self.speed))
-            self.speed_button.setText(str(self.speed) + 'x') 
+            self.speed_button.setText(str(self.speed) + 'x')
+
+        # # check if synced
+        # if self.app.sync:
+        #     self.app.channel_2.change_speed()
 
     def clear(self):  
         self.plot_widget.clear()
