@@ -1,7 +1,7 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QListWidget, QListWidgetItem, QVBoxLayout, QWidget, QMenu
+from PyQt6.QtGui import *
+from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QTimer, Qt
-from PyQt6.QtGui import QCursor
 import pyqtgraph as pg
 from models.channel import Channel
 
@@ -69,7 +69,7 @@ class MainWindow(uiclass, baseclass):
 
     def showContextMenu_1(self, pos):
         selected_item = self.signals_list_1.itemAt(pos)
-
+        
         if selected_item:
             selected_index = self.signals_list_1.row(selected_item)
             context_menu = QMenu(self)
@@ -82,19 +82,23 @@ class MainWindow(uiclass, baseclass):
                 self.channel_1.remove_signal(selected_index)
 
     def item_menu_1(self, item, index):
-
         updated_x_data = []
         updated_y_data = []
+
+        target_signal = self.channel_1.signals[index]
+
         for x, y in zip(self.channel_1.x_data, self.channel_1.y_data):
-            if x not in self.channel_1.signals[index].x_vec and y not in self.channel_1.signals[index].y_vec:
+            if x not in target_signal.x_vec and y not in target_signal.y_vec:
                 updated_x_data.append(x)
                 updated_y_data.append(y)
 
         self.channel_1.plot_widget.clear()
         self.channel_1.plot_widget.plot(updated_x_data, updated_y_data)
-        self.channel_2.render_signal_to_channel(self.channel_1.signals[index])
-
-        self.channel_2.signals.append(self.channel_1.signals[index])
+        self.channel_2.render_signal_to_channel(target_signal)
+        self.channel_2.signals.append(target_signal)
+        # Add signals to channel list
+        item = QListWidgetItem(target_signal.title)
+        item.setBackground(QColor(*(target_signal.color.value)))
         self.channel_2.signals_list.addItem(item)
         self.channel_1.signals.pop(index)
         self.channel_1.signals_list.takeItem(index)
