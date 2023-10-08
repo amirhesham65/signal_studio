@@ -80,6 +80,9 @@ class MainWindow(uiclass, baseclass):
                 self.item_menu_1(selected_item, selected_index)
             if action == action2:
                 self.channel_1.remove_signal(selected_index)
+            # clear channel if it displays no signals
+            if len(self.channel_1.signals_list) == 0:
+                self.channel_1.clear()
 
     def item_menu_1(self, item, index):
         updated_x_data = []
