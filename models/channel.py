@@ -126,22 +126,25 @@ class Channel:
                 self.play_button.setText('Rewind')
 
     def play_pause(self):
-        try:
-            if(self.data_index >= len(self.x_vec)):
-               self.data_index = 0
-               self.is_plotting = True
-               self.timer.start(floor(8/self.speed))  # Update every 1 ms
-               self.play_button.setText('Pause')
-            elif(self.is_plotting):
-               self.is_plotting = False
-               self.timer.stop()  # Update every 1 ms
-               self.play_button.setText('Play')
-            else:
-               self.is_plotting = True
-               self.timer.start(floor(8/self.speed))  # Update every 1 ms
-               self.play_button.setText('Pause')
-        except Exception:
-            QMessageBox.warning(self.app, "Warning", "Select the data first!")
+        if len(self.signals_list) == 0:
+            self.play_button.setText('Play')
+        else:
+            try:
+                if(self.data_index >= len(self.x_vec)):
+                   self.data_index = 0
+                   self.is_plotting = True
+                   self.timer.start(floor(8/self.speed))  # Update every 1 ms
+                   self.play_button.setText('Pause')
+                elif(self.is_plotting):
+                   self.is_plotting = False
+                   self.timer.stop()  # Update every 1 ms
+                   self.play_button.setText('Play')
+                else:
+                   self.is_plotting = True
+                   self.timer.start(floor(8/self.speed))  # Update every 1 ms
+                   self.play_button.setText('Pause')
+            except Exception:
+                QMessageBox.warning(self.app, "Warning", "Select the data first!")
 
     def change_speed(self):
         if(self.speed == 8):
