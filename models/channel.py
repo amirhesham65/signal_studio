@@ -72,8 +72,9 @@ class Channel:
                 self.render_signal_to_channel(signal=signal)
                 self.signals_list.addItem(item)
                 self.signals.append(signal)
-                self.x_data.extend(signal.x_vec)
-                self.y_data.extend(signal.y_vec)
+                if len(self.signals_list) != 0:
+                    self.x_data.extend(signal.x_vec)
+                    self.y_data.extend(signal.y_vec)
                 dialog.close()
             add_button.clicked.connect(add_signal)
 
@@ -159,12 +160,11 @@ class Channel:
         self.play_button.setText('Play')
         # reset x, y asix
         self.on_channel_slider_change(1)
-        self.initialize_signals_slots()
+        # self.initialize_signals_slots()
         # reset slider
         self.slider.setValue(0)
         # clear signal list
         self.signals_list.clear()
-
 
 
     def remove_signal(self, index):
