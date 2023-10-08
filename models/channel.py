@@ -162,6 +162,8 @@ class Channel:
         self.initialize_signals_slots()
         # reset slider
         self.slider.setValue(0)
+        # clear signal list
+        self.signals_list.clear()
 
 
 
