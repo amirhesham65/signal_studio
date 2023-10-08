@@ -1,10 +1,12 @@
 import sys
-from PyQt6.QtWidgets import QApplication
+from PyQt6.QtWidgets import QApplication, QListWidget, QListWidgetItem, QVBoxLayout, QWidget, QMenu
 from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtGui import QCursor
 import pyqtgraph as pg
 from models.channel import Channel
 
 uiclass, baseclass = pg.Qt.loadUiType("main.ui")
+
 
 class MainWindow(uiclass, baseclass):
     def __init__(self):
@@ -13,6 +15,12 @@ class MainWindow(uiclass, baseclass):
 
         self.timer_1 = QTimer(self)
         self.timer_2 = QTimer(self)
+
+        self.signals_list_1.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.signals_list_1.customContextMenuRequested.connect(self.showContextMenu_1)
+
+        self.signals_list_2.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.signals_list_2.customContextMenuRequested.connect(self.showContextMenu_2)
 
         self.channel_1 = Channel(
             app=self, 
@@ -59,7 +67,72 @@ class MainWindow(uiclass, baseclass):
     def toggle_channel_2(self, state):
         self.channel_2_container.setVisible(state == 0)
 
+    def showContextMenu_1(self, pos):
+        selected_item = self.signals_list_1.itemAt(pos)
 
+        if selected_item:
+            selected_index = self.signals_list_1.row(selected_item)
+            context_menu = QMenu(self)
+            action1 = context_menu.addAction("Move to Channel 2")
+            action2 = context_menu.addAction("Delete Signal")
+            action = context_menu.exec(QCursor.pos())
+            if action == action1:
+                self.item_menu_1(selected_item, selected_index)
+            if action == action2:
+                self.channel_1.remove_signal(selected_index)
+
+    def item_menu_1(self, item, index):
+
+        updated_x_data = []
+        updated_y_data = []
+        for x, y in zip(self.channel_1.x_data, self.channel_1.y_data):
+            if x not in self.channel_1.signals[index].x_vec and y not in self.channel_1.signals[index].y_vec:
+                updated_x_data.append(x)
+                updated_y_data.append(y)
+
+        self.channel_1.plot_widget.clear()
+        self.channel_1.plot_widget.plot(updated_x_data, updated_y_data)
+        self.channel_2.render_signal_to_channel(self.channel_1.signals[index])
+
+        self.channel_2.signals.append(self.channel_1.signals[index])
+        self.channel_2.signals_list.addItem(item)
+        self.channel_1.signals.pop(index)
+        self.channel_1.signals_list.takeItem(index)
+
+    def showContextMenu_2(self, pos):
+        selected_item = self.signals_list_2.itemAt(pos)
+
+        if selected_item:
+            selected_index = self.signals_list_2.row(selected_item)
+            context_menu = QMenu(self)
+            action1 = context_menu.addAction("Move to Channel 1")
+            action2 = context_menu.addAction("Delete Signal")
+            action = context_menu.exec(QCursor.pos())
+            if action == action1:
+                self.item_menu_2(selected_item, selected_index)
+
+            if action == action2:
+                self.channel_2.remove_signal(selected_index)
+
+    def item_menu_2(self, item, index):
+
+        updated_x_data = []
+        updated_y_data = []
+
+        # Iterate over the points and keep only the ones that should not be removed
+        for x, y in zip(self.channel_2.x_data, self.channel_2.y_data):
+            if x not in self.channel_2.signals[index].x_vec and y not in self.channel_2.signals[index].y_vec:
+                updated_x_data.append(x)
+                updated_y_data.append(y)
+
+        self.channel_2.plot_widget.clear()
+        self.channel_2.plot_widget.plot(updated_x_data, updated_y_data)
+        self.channel_1.render_signal_to_channel(self.channel_2.signals[index])
+
+        self.channel_1.signals.append(self.channel_2.signals[index])
+        self.channel_1.signals_list.addItem(item)
+        self.channel_2.signals.pop(index)
+        self.channel_2.signals_list.takeItem(index)
 
 def main():
     app = QApplication(sys.argv)

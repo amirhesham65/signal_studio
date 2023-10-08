@@ -1,6 +1,7 @@
 from math import floor
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
+from PyQt6.QtCore import Qt
 import pyqtgraph as pg
 from models.signal import Signal, SignalColor
 from helpers.get_signal_from_file import get_signal_from_file
@@ -20,6 +21,9 @@ class Channel:
         self.clear_button = clear_button
         self.timer = timer
         self.signals_list = signals_list
+        self.signals = []
+        self.x_data = []
+        self.y_data = []
 
         self.initialize_signals_slots()
 
@@ -67,6 +71,9 @@ class Channel:
                 item.setBackground(QColor(*(signal.color.value)))
                 self.render_signal_to_channel(signal=signal)
                 self.signals_list.addItem(item)
+                self.signals.append(signal)
+                self.x_data.extend(signal.x_vec)
+                self.y_data.extend(signal.y_vec)
                 dialog.close()
             add_button.clicked.connect(add_signal)
 
@@ -155,3 +162,20 @@ class Channel:
         self.initialize_signals_slots()
         # reset slider
         self.slider.setValue(0)
+
+
+
+    def remove_signal(self, index):
+        updated_x_data = []
+        updated_y_data = []
+        for x, y in zip(self.x_data, self.y_data):
+            if x not in self.signals[index].x_vec and y not in self.signals[index].y_vec:
+                updated_x_data.append(x)
+                updated_y_data.append(y)
+
+        self.plot_widget.clear()
+        self.plot_widget.plot(updated_x_data, updated_y_data)
+        self.signals.pop(index)
+        self.signals_list.takeItem(index)
+        
+
