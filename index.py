@@ -123,17 +123,20 @@ class MainWindow(uiclass, baseclass):
         updated_x_data = []
         updated_y_data = []
 
-        # Iterate over the points and keep only the ones that should not be removed
+        target_signal = self.channel_2.signals[index]
+
         for x, y in zip(self.channel_2.x_data, self.channel_2.y_data):
-            if x not in self.channel_2.signals[index].x_vec and y not in self.channel_2.signals[index].y_vec:
+            if x not in target_signal.x_vec and y not in target_signal.y_vec:
                 updated_x_data.append(x)
                 updated_y_data.append(y)
 
         self.channel_2.plot_widget.clear()
         self.channel_2.plot_widget.plot(updated_x_data, updated_y_data)
-        self.channel_1.render_signal_to_channel(self.channel_2.signals[index])
-
-        self.channel_1.signals.append(self.channel_2.signals[index])
+        self.channel_1.render_signal_to_channel(target_signal)
+        self.channel_1.signals.append(target_signal)
+        # Add signals to channel list
+        item = QListWidgetItem(target_signal.title)
+        item.setBackground(QColor(*(target_signal.color.value)))
         self.channel_1.signals_list.addItem(item)
         self.channel_2.signals.pop(index)
         self.channel_2.signals_list.takeItem(index)
