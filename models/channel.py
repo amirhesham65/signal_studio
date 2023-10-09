@@ -24,6 +24,7 @@ class Channel:
         self.signals = []
         self.x_data = []
         self.y_data = []
+        self.sync = False
 
         self.initialize_signals_slots()
 
@@ -109,9 +110,9 @@ class Channel:
     
     def update_plot(self):
        if self.is_plotting:
-            if self.data_index < len(self.x_vec):
-                x_data = self.x_vec[:self.data_index + 1]
-                y_data = self.y_vec[:self.data_index + 1]
+            if self.data_index < len(self.x_data):
+                x_data = self.x_data[:self.data_index + 1]
+                y_data = self.y_data[:self.data_index + 1]
                 if(x_data[-1] < 1):
                     self.plot_widget.setXRange(0, 1)
                 else:    
@@ -130,7 +131,7 @@ class Channel:
             self.play_button.setText('Play')
         else:
             try:
-                if(self.data_index >= len(self.x_vec)):
+                if(self.data_index >= len(self.x_data)):
                    self.data_index = 0
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
@@ -147,10 +148,13 @@ class Channel:
                 QMessageBox.warning(self.app, "Warning", "Select the data first!")
 
 
-        # if self.app.sync:  Recurssion Error
-        #     self.app.channel_2.play_pause()
+        # check if synced
+        if self.sync:
+            self.app.channel_2.play_pause()
 
     def change_speed(self):
+        if self.sync:
+            self.app.channel_2.speed = self.speed
         if(self.speed == 8):
             self.speed = 1
             self.timer.start(floor( 8/self.speed))
@@ -160,9 +164,9 @@ class Channel:
             self.timer.start(floor( 8/self.speed))
             self.speed_button.setText(str(self.speed) + 'x')
 
-        # # check if synced
-        # if self.app.sync:
-        #     self.app.channel_2.change_speed()
+        # check if synced
+        if self.sync:
+            self.app.channel_2.change_speed()
 
     def clear(self):  
         self.plot_widget.clear()
@@ -176,6 +180,9 @@ class Channel:
         self.slider.setValue(0)
         # clear signal list
         self.signals_list.clear()
+         # check if synced
+        if self.sync:
+            self.app.channel_2.clear()
 
 
     def remove_signal(self, index):
