@@ -4,6 +4,10 @@ from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QTimer, Qt
 import pyqtgraph as pg
 from models.channel import Channel
+import pdfkit
+import jinja2
+from io import BytesIO
+import tempfile
 
 uiclass, baseclass = pg.Qt.loadUiType("main.ui")
 
@@ -55,6 +59,7 @@ class MainWindow(uiclass, baseclass):
         self.import_signal_ch1.triggered.connect(self.channel_1.import_signal_channel)
         self.actionPlay_Pause.triggered.connect(self.channel_1.play_pause)
         self.hide_channel_1_chk.stateChanged.connect(self.toggle_channel_1)
+        self.actionExport_signal.triggered.connect(self.export_pdf)
 
         # Channel 2
         self.import_signal_ch2.triggered.connect(self.channel_2.import_signal_channel) 
@@ -173,6 +178,29 @@ class MainWindow(uiclass, baseclass):
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
             self.sync_button.setText("Sync")
+
+    def export_pdf(self):
+        # Render the PlotWidget to the image file
+        img_filename = tempfile.mktemp(suffix=".png")
+        
+        # Render the PlotWidget to the image file
+        self.widget.grab().save(img_filename, format="PNG")
+        # img = self.widget.grab()
+
+        # Render HTML template
+        templateLoader = jinja2.FileSystemLoader(searchpath="./")
+        templateEnv = jinja2.Environment(loader=templateLoader)
+        TEMPLATE_FILE = "template.html"
+        template = templateEnv.get_template(TEMPLATE_FILE)
+        context = {"plot": img_filename}
+        outputText = template.render(
+            context
+        )
+        config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+        pdfkit.from_string(outputText, "out.pdf", configuration=config, options={"enable-local-file-access": ""}) 
+
+    
+
 def main():
     app = QApplication(sys.argv)
     window = MainWindow()
