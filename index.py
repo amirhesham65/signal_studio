@@ -159,6 +159,7 @@ class MainWindow(uiclass, baseclass):
             self.channel_2.play_button.hide()
             self.channel_2.clear_button.hide()
             self.channel_2.speed_button.hide()
+            self.channel_2.slider.hide()
 
             # trigger both channels with channel 1 controls
             #some code
