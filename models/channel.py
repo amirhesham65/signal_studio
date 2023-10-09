@@ -37,6 +37,10 @@ class Channel:
     
     def on_channel_slider_change(self, value):
         self.plot_widget.setXRange(value - 1, value)
+        if self.sync:
+            self.app.channel_2.slider.setValue(value)
+            self.app.channel_2.plot_widget.setXRange(value - 1, value)
+            self.app.channel_2.slider.repaint()
 
     def import_signal_channel(self):
         signal: Signal = get_signal_from_file(self.app)
