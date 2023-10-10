@@ -84,18 +84,18 @@ class MainWindow(uiclass, baseclass):
             action4 = context_menu.addAction("Hide")
             action = context_menu.exec(QCursor.pos())
             if action == action1:
-                self.move_signal_1(selected_item, selected_index)
+                self.move_signal_1(selected_index)
             if action == action2:
                 self.channel_1.remove_signal(selected_index)
             if action == action3:
                 self.channel_1.edit_signal(selected_index)
             if action == action4:
-                pass    
+                self.channel_1.hide_signal(selected_index)
             # clear channel if it displays no signals
             if len(self.channel_1.signals_list) == 0:
                 self.channel_1.clear()
 
-    def move_signal_1(self, item, index):
+    def move_signal_1(self, index):
 
         target_signal = self.channel_1.signals[index]
 
@@ -137,7 +137,7 @@ class MainWindow(uiclass, baseclass):
             if action == action3:
                 self.channel_2.edit_signal(selected_index)
             if action == action4:
-                pass
+                self.channel_2.hide_signal(selected_index)
             if len(self.channel_2.signals_list) == 0:
                 self.channel_2.clear()
 

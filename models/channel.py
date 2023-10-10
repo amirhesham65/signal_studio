@@ -217,6 +217,11 @@ class Channel:
         self.signals.pop(index)
         self.signals_list.takeItem(index)
 
+    def hide_signal(self, index):
+        signal = self.signals[index];
+        signal.color = SignalColor.GREEN
+        self.render_signal_to_channel(signal=signal)
+
     def edit_signal(self, index):
             signal = self.signals[index];
             dialog = QDialog(self.app)
