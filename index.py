@@ -53,6 +53,9 @@ class MainWindow(uiclass, baseclass):
         # Prevent zooming and paning
         self.widget.setMouseEnabled(x=False, y=False)
         self.widget_2.setMouseEnabled(x=False, y=False)
+        # hide speed buttons (real time signal)
+        self.speed_button_1.hide()
+        self.speed_button_2.hide()
 
     def initialize_signals_slots(self):
         # Channel 1
@@ -197,6 +200,8 @@ class MainWindow(uiclass, baseclass):
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
             self.sync_button.setText("Sync")
+
+
 
     def export_pdf(self):
         # Render the PlotWidget to the image file
