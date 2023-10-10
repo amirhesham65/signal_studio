@@ -230,11 +230,9 @@ class Channel:
         def unhide_signal(signal):
             pen = pg.mkPen(color=signal.color.value)
             if signal.last_drawn_index == 0:
-                print(pen)
                 self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
             else:
                 self.curve = self.plot_widget.plot(signal.x_vec[:self.data_index], signal.y_vec[:self.data_index], pen=pen)
-                print(signal.color)
 
         if signal.hidden:
             hide_signal(signal)
@@ -242,10 +240,12 @@ class Channel:
             unhide_signal(signal)
 
     def change_color(self, index, color):
-
-
-
-
+        signal = self.signals[index]
+        pen = pg.mkPen(color=signal.color.value)
+        if signal.last_drawn_index == 0:
+            self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+        else:
+            self.curve = self.plot_widget.plot(signal.x_vec[:self.data_index], signal.y_vec[:self.data_index], pen=pen)
 
     def edit_signal(self, index):
             signal = self.signals[index];
@@ -284,7 +284,7 @@ class Channel:
                         signal.color = SignalColor.ORANGE
                     case "Purple":
                         signal.color = SignalColor.PURPLE
-                self.render_signal_to_channel(signal=signal)
+                self.change_color(index, signal.color)
                 dialog.close()
             add_button.clicked.connect(edit)
 
