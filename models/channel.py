@@ -127,16 +127,18 @@ class Channel:
                 y_data = self.y_data[:self.data_index + 1]
                 if(x_data[-1] < 1):
                     self.plot_widget.setXRange(0, 1)
-                else:    
+                else:
                     self.plot_widget.setXRange(x_data[-1]-1, x_data[-1])
                 self.slider.setValue(int(x_data[-1]))
                 self.slider.repaint()
                 self.curve.setData(x_data, y_data)
-                self.data_index += 1     
+                self.data_index += 1
+
             else:
                 self.is_plotting = False
-                self.timer.stop() 
+                self.timer.stop()
                 self.play_button.setText('Rewind')
+
 
     def play_pause(self):
         if len(self.signals_list) == 0:
@@ -217,10 +219,33 @@ class Channel:
         self.signals.pop(index)
         self.signals_list.takeItem(index)
 
-    def hide_signal(self, index):
+    def hide_unhide(self, index):
         signal = self.signals[index];
-        signal.color = SignalColor.GREEN
-        self.render_signal_to_channel(signal=signal)
+        signal.hidden = not signal.hidden
+        def hide_signal(signal):
+            signal.last_drawn_index = self.data_index
+            pen = pg.mkPen(color=SignalColor.TRANSPARENT.value)
+            self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+
+        def unhide_signal(signal):
+            pen = pg.mkPen(color=signal.color.value)
+            if signal.last_drawn_index == 0:
+                print(pen)
+                self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+            else:
+                self.curve = self.plot_widget.plot(signal.x_vec[:self.data_index], signal.y_vec[:self.data_index], pen=pen)
+                print(signal.color)
+
+        if signal.hidden:
+            hide_signal(signal)
+        else:
+            unhide_signal(signal)
+
+    def change_color(self, index, color):
+
+
+
+
 
     def edit_signal(self, index):
             signal = self.signals[index];

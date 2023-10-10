@@ -81,7 +81,7 @@ class MainWindow(uiclass, baseclass):
             action1 = context_menu.addAction("Move to Channel 2")
             action2 = context_menu.addAction("Delete Signal")
             action3 = context_menu.addAction("Change Color")
-            action4 = context_menu.addAction("Hide")
+            action4 = context_menu.addAction("Hide / UnHide")
             action = context_menu.exec(QCursor.pos())
             if action == action1:
                 self.move_signal_1(selected_index)
@@ -90,7 +90,8 @@ class MainWindow(uiclass, baseclass):
             if action == action3:
                 self.channel_1.edit_signal(selected_index)
             if action == action4:
-                self.channel_1.hide_signal(selected_index)
+                self.channel_1.hide_unhide(selected_index)
+                print("after color", self.channel_1.signals[selected_index].color)
             # clear channel if it displays no signals
             if len(self.channel_1.signals_list) == 0:
                 self.channel_1.clear()
@@ -110,7 +111,7 @@ class MainWindow(uiclass, baseclass):
 
         self.channel_1.plot_widget.clear()
         self.channel_1.plot_widget.plot(updated_x_data, updated_y_data)
-        self.channel_2.render_signal_to_channel(target_signal)
+        self.channel_2._signal_to_channel(target_signal)
         # self.channel_2.signals.append(target_signal)
         # Add signals to channel list
         # item = QListWidgetItem(target_signal.title)
@@ -128,7 +129,7 @@ class MainWindow(uiclass, baseclass):
             action1 = context_menu.addAction("Move to Channel 1")
             action2 = context_menu.addAction("Delete Signal")
             action3 = context_menu.addAction("Change Color")
-            action4 = context_menu.addAction("Hide")
+            action4 = context_menu.addAction("Hide / UnHide")
             action = context_menu.exec(QCursor.pos())
             if action == action1:
                 self.move_signal_2(selected_item, selected_index)

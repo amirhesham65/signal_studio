@@ -8,6 +8,8 @@ class Signal:
         self.color = SignalColor.DEFAULT
         self.x_vec = x_vec
         self.y_vec = y_vec
+        self.last_drawn_index = 0
+        self.hidden = False
 
     def get_statistics(self):
         mean = np.mean(self.y_vec)
@@ -27,3 +29,4 @@ class SignalColor(Enum):
     YELLOW = (255,255,0)
     ORANGE = (255,165,0)
     PURPLE = (255,0,255)
+    TRANSPARENT = (0, 0, 0)
