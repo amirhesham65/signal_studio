@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-from PyQt6.QtCore import QTimer, Qt
+from PyQt6.QtCore import QTimer, Qt, QSize
 import pyqtgraph as pg
 from models.channel import Channel
 import pdfkit
@@ -25,6 +25,12 @@ class MainWindow(uiclass, baseclass):
 
         self.signals_list_2.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.signals_list_2.customContextMenuRequested.connect(self.showContextMenu_2)
+
+        self.sync_icon = QIcon()
+        self.sync_icon.addPixmap(QPixmap("./imgs/buttons_img/sync_btn.png"))
+
+        self.unsync_icon = QIcon()
+        self.unsync_icon.addPixmap(QPixmap("./imgs/buttons_img/unsync_btn.png"))
 
         self.channel_1 = Channel(
             app=self, 
@@ -50,12 +56,16 @@ class MainWindow(uiclass, baseclass):
 
         self.initialize_signals_slots()
         self.sync_button.clicked.connect(self.sync_channels)
+        self.sync_button.setText("")
+        self.sync_button.setIcon(self.sync_icon)
+        self.sync_button.setIconSize(QSize(30, 30))
         # Prevent zooming and paning
         self.widget.setMouseEnabled(x=False, y=False)
         self.widget_2.setMouseEnabled(x=False, y=False)
         # hide speed buttons (real time signal)
         self.speed_button_1.hide()
         self.speed_button_2.hide()
+
 
     def initialize_signals_slots(self):
         # Channel 1
@@ -187,7 +197,8 @@ class MainWindow(uiclass, baseclass):
             self.actionPlay_Pause_2.setVisible(False)
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
-            self.sync_button.setText("Unsync")
+            self.sync_button.setIcon(self.unsync_icon)
+            self.sync_button.setIconSize(QSize(30, 30))
             
             #Sync coresponding to channel 1
             self.channel_2.data_index = self.channel_1.data_index
@@ -199,7 +210,8 @@ class MainWindow(uiclass, baseclass):
             self.actionPlay_Pause_2.setVisible(True)
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
-            self.sync_button.setText("Sync")
+            self.sync_button.setIcon(self.sync_icon)
+            self.sync_button.setIconSize(QSize(30, 30))
 
 
 

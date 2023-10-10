@@ -1,8 +1,9 @@
 from math import floor
 from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QSize
 import pyqtgraph as pg
+from PyQt6.uic.properties import QtGui, QtCore
 from models.signal import Signal, SignalColor
 from helpers.get_signal_from_file import get_signal_from_file
 
@@ -26,16 +27,44 @@ class Channel:
         self.y_data = []
         self.sync = False
         self.curves = []
+        self.data_index = 0
+
+        self.play_icon = QIcon()
+        self.play_icon.addPixmap(QPixmap("./imgs/buttons_img/play_btn.png"))
+        # self.play_button.setIcon(play_icon)
+        # self.play_button.setIconSize(QSize(30, 30))
+
+        self.pause_icon = QIcon()
+        self.pause_icon.addPixmap(QPixmap("./imgs/buttons_img/pause_btn.png"))
+
+        self.rewind_icon = QIcon()
+        self.rewind_icon.addPixmap(QPixmap("./imgs/buttons_img/rewind_btn.png"))
+
+        self.clear_icon = QIcon()
+        self.clear_icon.addPixmap(QPixmap("./imgs/buttons_img/clear_btn.png"))
+
+        self.zoom_in = QIcon()
+        self.zoom_out = QIcon()
 
         self.initialize_signals_slots()
 
     def initialize_signals_slots(self):
         self.timer.timeout.connect(self.update_plot)
+        self.play_button.setText("")
+        self.play_button.setIcon(self.play_icon)
+        self.play_button.setIconSize(QSize(30, 30))
         self.play_button.clicked.connect(self.play_pause)
         self.speed_button.clicked.connect(self.change_speed)
         self.clear_button.clicked.connect(self.clear)
+        self.clear_button.setText("")
+        self.clear_button.setIcon(self.clear_icon)
+        self.clear_button.setIconSize(QSize(30, 30))
         self.slider.valueChanged.connect(self.on_channel_slider_change)
-    
+
+
+
+
+
     def on_channel_slider_change(self, value):
         self.plot_widget.setXRange(value - 1, value)
         if self.sync:
@@ -137,27 +166,33 @@ class Channel:
             else:
                 self.is_plotting = False
                 self.timer.stop()
-                self.play_button.setText('Rewind')
+                self.play_button.setIcon(self.rewind_icon)
+                self.play_button.setIconSize(QSize(30, 30))
 
 
     def play_pause(self):
         if len(self.signals_list) == 0:
-            self.play_button.setText('Play')
+            # self.play_button.setText('Play')
+            self.play_button.setIcon(self.play_icon)
+            self.play_button.setIconSize(QSize(30, 30))
         else:
             try:
                 if(self.data_index >= len(self.x_data)):
                    self.data_index = 0
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
-                   self.play_button.setText('Pause')
+                   self.play_button.setIcon(self.pause_icon)
+                   self.play_button.setIconSize(QSize(30, 30))
                 elif(self.is_plotting):
                    self.is_plotting = False
                    self.timer.stop()  # Update every 1 ms
-                   self.play_button.setText('Play')
+                   self.play_button.setIcon(self.play_icon)
+                   self.play_button.setIconSize(QSize(30, 30))
                 else:
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
-                   self.play_button.setText('Pause')
+                   self.play_button.setIcon(self.pause_icon)
+                   self.play_button.setIconSize(QSize(30, 30))
             except Exception:
                 QMessageBox.warning(self.app, "Warning", "Select the data first!")
 
@@ -186,7 +221,8 @@ class Channel:
         self.plot_widget.clear()
         self.is_plotting = False
         self.timer.stop()  # Update every 1 ms
-        self.play_button.setText('Play')
+        self.play_button.setIcon(self.play_icon)
+        self.play_button.setIconSize(QSize(30, 30))
         # reset x, y asix
         self.on_channel_slider_change(1)
         # self.initialize_signals_slots()
