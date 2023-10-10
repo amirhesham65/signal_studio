@@ -25,6 +25,7 @@ class Channel:
         self.x_data = []
         self.y_data = []
         self.sync = False
+        self.curves = []
 
         self.initialize_signals_slots()
 
@@ -72,14 +73,7 @@ class Channel:
                 else:
                     signal.color = SignalColor.GREEN
                 print(signal_color_cb.currentText())
-                item = QListWidgetItem(signal.title)
-                item.setBackground(QColor(*(signal.color.value)))
                 self.render_signal_to_channel(signal=signal)
-                self.signals_list.addItem(item)
-                self.signals.append(signal)
-                if len(self.signals_list) != 0:
-                    self.x_data.extend(signal.x_vec)
-                    self.y_data.extend(signal.y_vec)
                 dialog.close()
             add_button.clicked.connect(add_signal)
 
@@ -88,8 +82,15 @@ class Channel:
 
     def render_signal_to_channel(self, signal):
         # Set up the initial plot
+        item = QListWidgetItem(signal.title)
+        item.setBackground(QColor(*(signal.color.value)))
+        self.signals_list.addItem(item)
+        self.signals.append(signal)
+        self.x_data.extend(signal.x_vec)
+        self.y_data.extend(signal.y_vec)
         pen = pg.mkPen(color=signal.color.value)
         curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+        self.curves.append(curve)
 
         # Store the data and curve for real-time updating
         self.x_vec = signal.x_vec
@@ -184,22 +185,71 @@ class Channel:
         self.slider.setValue(0)
         # clear signal list
         self.signals_list.clear()
+        self.x_data = []
+        self.y_data = []
+        self.data_index = 0
+        
          # check if synced
         if self.sync:
             self.app.channel_2.clear()
 
 
     def remove_signal(self, index):
-        updated_x_data = []
-        updated_y_data = []
-        for x, y in zip(self.x_data, self.y_data):
-            if x not in self.signals[index].x_vec and y not in self.signals[index].y_vec:
-                updated_x_data.append(x)
-                updated_y_data.append(y)
 
+        data_x_y_pairs = set(list(zip(self.x_data, self.y_data)))
+        deleted_x_y_pairs = set(list(zip(self.signals[index].x_vec, self.signals[index].y_vec)))
+        updated_pairs = [pair for pair in data_x_y_pairs if pair not in deleted_x_y_pairs]
+
+        updated_x_data = [pair[0] for pair in updated_pairs]
+        updated_y_data = [pair[1] for pair in updated_pairs]
+        self.x_data = updated_x_data
+        self.y_data = updated_y_data
+        
         self.plot_widget.clear()
         self.plot_widget.plot(updated_x_data, updated_y_data)
         self.signals.pop(index)
         self.signals_list.takeItem(index)
-        
+
+    def edit_signal(self, index):
+            signal = self.signals[index];
+            dialog = QDialog(self.app)
+            dialog.resize(400, 100)
+
+            # Building the dialog content
+            dialog_layout = QVBoxLayout()
+            signal_input = QLineEdit()
+            signal_input.setText(signal.title)
+            signal_color_cb = QComboBox()
+            add_button = QPushButton("Edit Signal")
+            
+            signal_color_cb.addItems(["White", "Red", "Blue"])
+
+            if signal.color == SignalColor.BLUE:
+                signal_color_cb.setCurrentText("Blue")
+            elif signal.color == SignalColor.RED:
+                signal_color_cb.setCurrentText("Red")
+            else :
+                signal_color_cb.setCurrentText("Green")
+
+            dialog_layout.addWidget(signal_input)
+            dialog_layout.addWidget(signal_color_cb)
+            dialog_layout.addWidget(add_button)
+            dialog_layout.addStretch()
+            dialog.setLayout(dialog_layout)
+
+            def edit():
+                if signal_input.text():
+                    signal.title = signal_input.text()
+                if signal_color_cb.currentText() == "Blue":
+                    signal.color = SignalColor.BLUE
+                elif signal_color_cb.currentText() == "Red":
+                    signal.color = SignalColor.RED
+                else:
+                    signal.color = SignalColor.GREEN
+                print(signal_color_cb.currentText())
+                self.render_signal_to_channel(signal=signal)
+                dialog.close()
+            add_button.clicked.connect(edit)
+
+            dialog.exec()   
 
