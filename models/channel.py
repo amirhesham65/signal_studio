@@ -56,7 +56,7 @@ class Channel:
             signal_color_cb = QComboBox()
             add_button = QPushButton("Add Signal")
             
-            signal_color_cb.addItems(["White", "Red", "Blue"])
+            signal_color_cb.addItems(["Red", "Blue", "Green", "Orange", "Yellow", "Purple"])
             dialog_layout.addWidget(signal_input)
             dialog_layout.addWidget(signal_color_cb)
             dialog_layout.addWidget(add_button)
@@ -66,13 +66,20 @@ class Channel:
             def add_signal():
                 if signal_input.text():
                     signal.title = signal_input.text()
-                if signal_color_cb.currentText() == "Blue":
-                    signal.color = SignalColor.BLUE
-                elif signal_color_cb.currentText() == "Red":
-                    signal.color = SignalColor.RED
-                else:
-                    signal.color = SignalColor.GREEN
-                print(signal_color_cb.currentText())
+                signal_color = signal_color_cb.currentText()
+                match signal_color:
+                    case "Blue":
+                        signal.color = SignalColor.BLUE
+                    case "Red":
+                        signal.color = SignalColor.RED
+                    case "Green":
+                        signal.color = SignalColor.GREEN
+                    case "Yellow":
+                        signal.color = SignalColor.YELLOW
+                    case "Orange":
+                        signal.color = SignalColor.ORANGE
+                    case "Purple":
+                        signal.color = SignalColor.PURPLE
                 self.render_signal_to_channel(signal=signal)
                 dialog.close()
             add_button.clicked.connect(add_signal)
