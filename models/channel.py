@@ -28,7 +28,8 @@ class Channel:
         self.sync = False
         self.curves = []
         self.data_index = 0
-
+        # todo replace icons with more visually appealing ones, just replace each icon with it's correpsoning ones, keeping
+        #  naming of each btn so the structure of the code remains unchanged.
         self.play_icon = QIcon()
         self.play_icon.addPixmap(QPixmap("./imgs/buttons_img/play_btn.png"))
         # self.play_button.setIcon(play_icon)

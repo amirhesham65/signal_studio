@@ -205,7 +205,7 @@ class MainWindow(uiclass, baseclass):
         else:
             self.channel_2.play_button.show()
             self.channel_2.clear_button.show()
-            self.channel_2.speed_button.show()
+            # self.channel_2.speed_button.show()
             self.actionPlay_Pause.setVisible(True)
             self.actionPlay_Pause_2.setVisible(True)
             self.clear_signal_ch1.setVisible(False)
