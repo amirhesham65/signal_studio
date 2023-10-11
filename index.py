@@ -104,7 +104,6 @@ class MainWindow(uiclass, baseclass):
                 self.channel_1.edit_signal(selected_index)
             if action == action4:
                 self.channel_1.hide_unhide(selected_index)
-                print("after color", self.channel_1.signals[selected_index].color)
             # clear channel if it displays no signals
             if len(self.channel_1.signals_list) == 0:
                 self.channel_1.clear()

@@ -260,11 +260,17 @@ class Channel:
         signal = self.signals[index];
         signal.hidden = not signal.hidden
         def hide_signal(signal):
+            self.signals_list.setCurrentRow(index)
+            item = self.signals_list.currentItem()
+            item.setBackground(QColor(*signal.color.value + (128,)))
             signal.last_drawn_index = self.data_index
             pen = pg.mkPen(color=SignalColor.TRANSPARENT.value)
             self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
 
         def unhide_signal(signal):
+            self.signals_list.setCurrentRow(index)
+            item = self.signals_list.currentItem()
+            item.setBackground(QColor(*signal.color.value))
             pen = pg.mkPen(color=signal.color.value)
             if signal.last_drawn_index == 0:
                 self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
