@@ -72,7 +72,10 @@ class Channel:
 
 
     def on_channel_slider_change(self, value):
-        self.plot_widget.setXRange(value - 1, value)
+        if(value <= 1):
+            self.plot_widget.setXRange(0, 1)
+        else:    
+            self.plot_widget.setXRange(value - 1, value)
         if self.sync:
             self.app.channel_2.slider.setValue(value)
             self.app.channel_2.plot_widget.setXRange(value - 1, value)
