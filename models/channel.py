@@ -170,6 +170,10 @@ class Channel:
                 self.play_button.setIcon(self.rewind_icon)
                 self.play_button.setIconSize(QSize(30, 30))
 
+    # def get_stats(self, index):
+    #     signal = self.signals[index]
+    #     print(signal.get_statistics(self.data_index))
+
 
     def play_pause(self):
         if len(self.signals_list) == 0:
@@ -201,6 +205,7 @@ class Channel:
         # check if synced
         if self.sync:
             self.app.channel_2.play_pause()
+
 
     def change_speed(self):
         if self.sync:

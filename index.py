@@ -78,7 +78,8 @@ class MainWindow(uiclass, baseclass):
         self.import_signal_ch2.triggered.connect(self.channel_2.import_signal_channel) 
         self.actionPlay_Pause_2.triggered.connect(self.channel_2.play_pause)
         self.hide_channel_2_chk.stateChanged.connect(self.toggle_channel_2)
-    
+
+
     def toggle_channel_1(self, state):
         self.channel_1_container.setVisible(state == 0)
 
@@ -107,6 +108,7 @@ class MainWindow(uiclass, baseclass):
             # clear channel if it displays no signals
             if len(self.channel_1.signals_list) == 0:
                 self.channel_1.clear()
+
 
     def move_signal_1(self, index):
 
