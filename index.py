@@ -40,7 +40,9 @@ class MainWindow(uiclass, baseclass):
             speed_button=self.speed_button_1,
             clear_button=self.clear_button_1,
             timer=self.timer_1,
-            signals_list=self.signals_list_1
+            signals_list=self.signals_list_1,
+            zoom_in_button= self.zoom_in_button_1,
+            zoom_out_button= self.zoom_out_button_1
         )
 
         self.channel_2 = Channel(
@@ -51,7 +53,9 @@ class MainWindow(uiclass, baseclass):
             speed_button=self.speed_button_2,
             clear_button=self.clear_button_2,
             timer=self.timer_2,
-            signals_list=self.signals_list_2
+            signals_list=self.signals_list_2,
+            zoom_in_button= self.zoom_in_button_2,
+            zoom_out_button= self.zoom_out_button_2
         )
 
         self.initialize_signals_slots()
@@ -63,8 +67,8 @@ class MainWindow(uiclass, baseclass):
         self.widget.setMouseEnabled(x=False, y=False)
         self.widget_2.setMouseEnabled(x=False, y=False)
         # hide speed buttons (real time signal)
-        self.speed_button_1.hide()
-        self.speed_button_2.hide()
+        # self.speed_button_1.hide()
+        # self.speed_button_2.hide()
 
 
     def initialize_signals_slots(self):

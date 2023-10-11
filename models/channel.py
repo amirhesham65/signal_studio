@@ -8,7 +8,7 @@ from models.signal import Signal, SignalColor
 from helpers.get_signal_from_file import get_signal_from_file
 
 class Channel:
-    def __init__(self, app, plot_widget, slider, play_button, speed_button, clear_button, timer, signals_list) -> None:
+    def __init__(self, app, plot_widget, slider, play_button, speed_button, clear_button, timer, signals_list, zoom_in_button, zoom_out_button) -> None:
         self.app = app
         self.is_plotting = False
         self.speed = 1
@@ -44,8 +44,11 @@ class Channel:
         self.clear_icon = QIcon()
         self.clear_icon.addPixmap(QPixmap("./imgs/buttons_img/clear_btn.png"))
 
-        self.zoom_in = QIcon()
-        self.zoom_out = QIcon()
+        self.zoom_in_icon = QIcon()
+        self.zoom_out_icon = QIcon()
+
+        self.zoom_in_button = zoom_in_button
+        self.zoom_out_button = zoom_out_button
 
         self.initialize_signals_slots()
 
@@ -61,6 +64,8 @@ class Channel:
         self.clear_button.setIcon(self.clear_icon)
         self.clear_button.setIconSize(QSize(30, 30))
         self.slider.valueChanged.connect(self.on_channel_slider_change)
+        self.zoom_in_button.clicked.connect(self.zoom_in)
+        self.zoom_out_button.clicked.connect(self.zoom_out)
 
 
 
@@ -188,16 +193,25 @@ class Channel:
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
                    self.play_button.setIcon(self.pause_icon)
                    self.play_button.setIconSize(QSize(30, 30))
+                   self.slider.hide()
                 elif(self.is_plotting):
                    self.is_plotting = False
                    self.timer.stop()  # Update every 1 ms
                    self.play_button.setIcon(self.play_icon)
                    self.play_button.setIconSize(QSize(30, 30))
+                   self.slider.show()
+                   self.slider.setMinimum(0)
+                   self.slider.setMaximum(int(self.x_data[self.data_index]))
+                   self.slider.setValue(int(self.x_data[self.data_index]))
+                   self.slider.repaint()
+                   
+                   
                 else:
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
                    self.play_button.setIcon(self.pause_icon)
                    self.play_button.setIconSize(QSize(30, 30))
+                   self.slider.hide()
             except Exception:
                 QMessageBox.warning(self.app, "Warning", "Select the data first!")
 
@@ -208,6 +222,7 @@ class Channel:
 
 
     def change_speed(self):
+     if(self.is_plotting): 
         if self.sync:
             self.app.channel_2.speed = self.speed
         if(self.speed == 8):
@@ -341,3 +356,11 @@ class Channel:
 
             dialog.exec()   
 
+
+    def zoom_in(self):
+        vb = self.plot_widget.getViewBox()
+        vb.scaleBy((0.5, 0.5))
+    
+    def zoom_out(self):
+        vb = self.plot_widget.getViewBox()
+        vb.scaleBy((2, 2))
