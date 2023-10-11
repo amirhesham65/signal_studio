@@ -278,6 +278,9 @@ class Channel:
 
     def change_color(self, index, color):
         signal = self.signals[index]
+        self.signals_list.setCurrentRow(index)
+        item = self.signals_list.currentItem()
+        item.setBackground(QColor(*(color.value)))
         pen = pg.mkPen(color=signal.color.value)
         if signal.last_drawn_index == 0:
             self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
