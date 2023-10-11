@@ -192,6 +192,9 @@ class MainWindow(uiclass, baseclass):
             self.channel_2.play_button.hide()
             self.channel_2.clear_button.hide()
             self.channel_2.speed_button.hide()
+            self.channel_2.zoom_in_button.hide()
+            self.channel_2.zoom_out_button.hide()
+            self.channel_2.speed_button.hide()
             self.channel_2.slider.hide()
 
             # trigger both channels with channel 1 controls
@@ -210,7 +213,10 @@ class MainWindow(uiclass, baseclass):
         else:
             self.channel_2.play_button.show()
             self.channel_2.clear_button.show()
-            # self.channel_2.speed_button.show()
+            self.channel_2.zoom_in_button.show()
+            self.channel_2.zoom_out_button.show()
+            self.channel_2.slider.show()
+            self.channel_2.speed_button.show()
             self.actionPlay_Pause.setVisible(True)
             self.actionPlay_Pause_2.setVisible(True)
             self.clear_signal_ch1.setVisible(False)

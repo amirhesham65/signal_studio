@@ -363,7 +363,11 @@ class Channel:
     def zoom_in(self):
         vb = self.plot_widget.getViewBox()
         vb.scaleBy((0.5, 0.5))
+        if self.sync:
+            self.app.channel_2.zoom_in()
     
     def zoom_out(self):
         vb = self.plot_widget.getViewBox()
         vb.scaleBy((2, 2))
+        if self.sync:
+            self.app.channel_2.zoom_out()

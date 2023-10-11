@@ -657,10 +657,16 @@ QListWidget {
               <layout class="QHBoxLayout" name="horizontalLayout">
                <item>
                 <widget class="QPushButton" name="play_button_1">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
                  <property name="minimumSize">
                   <size>
                    <width>120</width>
-                   <height>0</height>
+                   <height>50</height>
                   </size>
                  </property>
                  <property name="maximumSize">
@@ -679,7 +685,7 @@ QListWidget {
                  <property name="minimumSize">
                   <size>
                    <width>120</width>
-                   <height>0</height>
+                   <height>50</height>
                   </size>
                  </property>
                  <property name="maximumSize">
