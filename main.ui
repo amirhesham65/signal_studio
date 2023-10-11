@@ -318,7 +318,7 @@ QTreeView,QListView,QTableView{
 	selection-background-color: #1B89CA;
 	selection-color: #F0F0F0;
 }
-
+/*
 QTableView::item:selected, QListView::item:selected, QTreeView::item:selected {
 	color: #F0F0F0;
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #1B89CA, stop:1 #1077B5); 
@@ -327,7 +327,7 @@ QTableView::item:selected, QListView::item:selected, QTreeView::item:selected {
 QTableView::item:hover, QListView::item:hover, QTreeView::item:hover {
 	color: #F0F0F0;
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #5CACEE, stop:1 #4F94CD); 
-}
+}*/
 
 QTableView::item, QListView::item, QTreeView::item {
 	padding: 5px; 
