@@ -64,6 +64,7 @@ class Channel:
         self.clear_button.setIcon(self.clear_icon)
         self.clear_button.setIconSize(QSize(30, 30))
         self.slider.valueChanged.connect(self.on_channel_slider_change)
+        self.slider.hide()
         self.zoom_in_button.clicked.connect(self.zoom_in)
         self.zoom_out_button.clicked.connect(self.zoom_out)
 
@@ -357,15 +358,16 @@ class Channel:
                 dialog.close()
             add_button.clicked.connect(edit)
 
-            dialog.exec()   
-
+            dialog.exec()
 
     def zoom_in(self):
         vb = self.plot_widget.getViewBox()
+        current_scale = vb.getState()['viewRange']
+        print(current_scale)
         vb.scaleBy((0.5, 0.5))
         if self.sync:
             self.app.channel_2.zoom_in()
-    
+
     def zoom_out(self):
         vb = self.plot_widget.getViewBox()
         vb.scaleBy((2, 2))

@@ -215,7 +215,6 @@ class MainWindow(uiclass, baseclass):
             self.channel_2.clear_button.show()
             self.channel_2.zoom_in_button.show()
             self.channel_2.zoom_out_button.show()
-            self.channel_2.slider.show()
             self.channel_2.speed_button.show()
             self.actionPlay_Pause.setVisible(True)
             self.actionPlay_Pause_2.setVisible(True)
