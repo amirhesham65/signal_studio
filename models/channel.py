@@ -28,6 +28,8 @@ class Channel:
         self.sync = False
         self.curves = []
         self.data_index = 0
+        self.zoom_in_button = zoom_in_button
+        self.zoom_out_button = zoom_out_button
         # todo replace icons with more visually appealing ones, just replace each icon with it's correpsoning ones, keeping
         #  naming of each btn so the structure of the code remains unchanged.
         self.play_icon = QIcon()
@@ -45,10 +47,17 @@ class Channel:
         self.clear_icon.addPixmap(QPixmap("./imgs/buttons_img/clear_btn.png"))
 
         self.zoom_in_icon = QIcon()
-        self.zoom_out_icon = QIcon()
+        self.zoom_in_icon.addPixmap(QPixmap("./imgs/buttons_img/zoom_in_btn.png"))
+        self.zoom_in_button.setText("")
+        self.zoom_in_button.setIcon(self.zoom_in_icon)
+        self.zoom_in_button.setIconSize(QSize(30, 30))
 
-        self.zoom_in_button = zoom_in_button
-        self.zoom_out_button = zoom_out_button
+        self.zoom_out_icon = QIcon()
+        self.zoom_out_icon.addPixmap(QPixmap("./imgs/buttons_img/zoom_out_btn.png"))
+        self.zoom_out_button.setText("")
+        self.zoom_out_button.setIcon(self.zoom_in_icon)
+        self.zoom_out_button.setIconSize(QSize(30, 30))
+
 
         self.initialize_signals_slots()
 
