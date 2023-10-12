@@ -55,7 +55,7 @@ class Channel:
         self.zoom_out_icon = QIcon()
         self.zoom_out_icon.addPixmap(QPixmap("./imgs/buttons_img/zoom_out_btn.png"))
         self.zoom_out_button.setText("")
-        self.zoom_out_button.setIcon(self.zoom_in_icon)
+        self.zoom_out_button.setIcon(self.zoom_out_icon)
         self.zoom_out_button.setIconSize(QSize(30, 30))
 
 
@@ -82,13 +82,13 @@ class Channel:
 
 
     def on_channel_slider_change(self, value):
-        if(value <= 1):
+        if(value <= 100):
             self.plot_widget.setXRange(0, 1)
         else:    
-            self.plot_widget.setXRange(value - 1, value)
+            self.plot_widget.setXRange(value/100 - 1, value/100)
         if self.sync:
-            self.app.channel_2.slider.setValue(value)
-            self.app.channel_2.plot_widget.setXRange(value - 1, value)
+            self.app.channel_2.slider.setValue(int(value))
+            self.app.channel_2.plot_widget.setXRange(value/100 - 1, value/100)
             self.app.channel_2.slider.repaint()
 
     def import_signal_channel(self):
@@ -166,7 +166,7 @@ class Channel:
         # Initialize the slider with the right values
         _, x_limit_max = curve.dataBounds(0)
         self.slider.setMinimum(1)
-        self.slider.setMaximum(int(x_limit_max))
+        self.slider.setMaximum(int(x_limit_max*100))
     
     def update_plot(self):
        if self.is_plotting:
@@ -177,7 +177,7 @@ class Channel:
                     self.plot_widget.setXRange(0, 1)
                 else:
                     self.plot_widget.setXRange(x_data[-1]-1, x_data[-1])
-                self.slider.setValue(int(x_data[-1]))
+                self.slider.setValue(int(x_data[-1]*100))
                 self.slider.repaint()
                 self.curve.setData(x_data, y_data)
                 self.data_index += 1
@@ -214,8 +214,8 @@ class Channel:
                    self.play_button.setIconSize(QSize(30, 30))
                    self.slider.show()
                    self.slider.setMinimum(0)
-                   self.slider.setMaximum(int(self.x_data[self.data_index]))
-                   self.slider.setValue(int(self.x_data[self.data_index]))
+                   self.slider.setMaximum(int(self.x_data[self.data_index]*100))
+                   self.slider.setValue(int(self.x_data[self.data_index]*100))
                    self.slider.repaint()
                    
                    
