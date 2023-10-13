@@ -3,7 +3,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QTimer, Qt, QSize
 import pyqtgraph as pg
-from models.channel import Channel
+from models.channel import Channel, ICON_SIZE
 import pdfkit
 import jinja2
 from io import BytesIO
@@ -42,7 +42,8 @@ class MainWindow(uiclass, baseclass):
             timer=self.timer_1,
             signals_list=self.signals_list_1,
             zoom_in_button= self.zoom_in_button_1,
-            zoom_out_button= self.zoom_out_button_1
+            zoom_out_button= self.zoom_out_button_1,
+            snap_button=self.snapshot_button_1
         )
 
         self.channel_2 = Channel(
@@ -55,14 +56,15 @@ class MainWindow(uiclass, baseclass):
             timer=self.timer_2,
             signals_list=self.signals_list_2,
             zoom_in_button= self.zoom_in_button_2,
-            zoom_out_button= self.zoom_out_button_2
+            zoom_out_button= self.zoom_out_button_2,
+            snap_button=self.snapshot_button_2
         )
 
         self.initialize_signals_slots()
         self.sync_button.clicked.connect(self.sync_channels)
-        self.sync_button.setText("")
+        self.sync_button.setText(" Sync")
         self.sync_button.setIcon(self.sync_icon)
-        self.sync_button.setIconSize(QSize(30, 30))
+        self.sync_button.setIconSize(ICON_SIZE)
         # Prevent zooming and paning
         self.widget.setMouseEnabled(x=False, y=False)
         self.widget_2.setMouseEnabled(x=False, y=False)
@@ -129,7 +131,7 @@ class MainWindow(uiclass, baseclass):
 
         self.channel_1.plot_widget.clear()
         self.channel_1.plot_widget.plot(updated_x_data, updated_y_data)
-        self.channel_2._signal_to_channel(target_signal)
+        self.channel_2.render_signal_to_channel(target_signal)
         # self.channel_2.signals.append(target_signal)
         # Add signals to channel list
         # item = QListWidgetItem(target_signal.title)
@@ -205,8 +207,9 @@ class MainWindow(uiclass, baseclass):
             self.actionPlay_Pause_2.setVisible(False)
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
+            self.sync_button.setText(" Unsync")
             self.sync_button.setIcon(self.unsync_icon)
-            self.sync_button.setIconSize(QSize(30, 30))
+            self.sync_button.setIconSize(ICON_SIZE)
             
             #Sync coresponding to channel 1
             self.channel_2.data_index = self.channel_1.data_index
@@ -221,7 +224,7 @@ class MainWindow(uiclass, baseclass):
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
             self.sync_button.setIcon(self.sync_icon)
-            self.sync_button.setIconSize(QSize(30, 30))
+            self.sync_button.setIconSize(ICON_SIZE)
 
 
 

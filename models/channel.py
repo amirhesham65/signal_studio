@@ -7,13 +7,25 @@ from PyQt6.uic.properties import QtGui, QtCore
 from models.signal import Signal, SignalColor
 from helpers.get_signal_from_file import get_signal_from_file
 
+ICON_SIZE = QSize(20, 20)
+
 class Channel:
-    def __init__(self, app, plot_widget, slider, play_button, speed_button, clear_button, timer, signals_list, zoom_in_button, zoom_out_button) -> None:
+    def __init__(self, app, plot_widget, slider, play_button, speed_button, clear_button, timer, signals_list, zoom_in_button, zoom_out_button, snap_button) -> None:
+        # Setting initial states
         self.app = app
         self.is_plotting = False
         self.speed = 1
         self.y_min = None
         self.y_max = None
+
+        self.signals = []
+        self.x_data = []
+        self.y_data = []
+        self.sync = False
+        self.curves = []
+        self.data_index = 0
+
+        # Connecting widgets
         
         self.plot_widget = plot_widget
         self.slider = slider
@@ -22,20 +34,16 @@ class Channel:
         self.clear_button = clear_button
         self.timer = timer
         self.signals_list = signals_list
-        self.signals = []
-        self.x_data = []
-        self.y_data = []
-        self.sync = False
-        self.curves = []
-        self.data_index = 0
+        
         self.zoom_in_button = zoom_in_button
         self.zoom_out_button = zoom_out_button
+        self.snap_button = snap_button
         # todo replace icons with more visually appealing ones, just replace each icon with it's correpsoning ones, keeping
         #  naming of each btn so the structure of the code remains unchanged.
         self.play_icon = QIcon()
         self.play_icon.addPixmap(QPixmap("./imgs/buttons_img/play_btn.png"))
         # self.play_button.setIcon(play_icon)
-        # self.play_button.setIconSize(QSize(30, 30))
+        # self.play_button.setIconSize(ICON_SIZE)
 
         self.pause_icon = QIcon()
         self.pause_icon.addPixmap(QPixmap("./imgs/buttons_img/pause_btn.png"))
@@ -50,35 +58,38 @@ class Channel:
         self.zoom_in_icon.addPixmap(QPixmap("./imgs/buttons_img/zoom_in_btn.png"))
         self.zoom_in_button.setText("")
         self.zoom_in_button.setIcon(self.zoom_in_icon)
-        self.zoom_in_button.setIconSize(QSize(30, 30))
+        self.zoom_in_button.setIconSize(ICON_SIZE)
 
         self.zoom_out_icon = QIcon()
         self.zoom_out_icon.addPixmap(QPixmap("./imgs/buttons_img/zoom_out_btn.png"))
         self.zoom_out_button.setText("")
         self.zoom_out_button.setIcon(self.zoom_out_icon)
-        self.zoom_out_button.setIconSize(QSize(30, 30))
+        self.zoom_out_button.setIconSize(ICON_SIZE)
+
+        self.snap_icon = QIcon()
+        self.snap_icon.addPixmap(QPixmap("./imgs/buttons_img/snap_btn.png"))
+        self.snap_button.setText(" Snapshot")
+        self.snap_button.setIcon(self.snap_icon)
+        self.snap_button.setIconSize(ICON_SIZE)
 
 
         self.initialize_signals_slots()
 
     def initialize_signals_slots(self):
         self.timer.timeout.connect(self.update_plot)
-        self.play_button.setText("")
+        self.play_button.setText(" Play")
         self.play_button.setIcon(self.play_icon)
-        self.play_button.setIconSize(QSize(30, 30))
+        self.play_button.setIconSize(ICON_SIZE)
         self.play_button.clicked.connect(self.play_pause)
         self.speed_button.clicked.connect(self.change_speed)
         self.clear_button.clicked.connect(self.clear)
-        self.clear_button.setText("")
+        self.clear_button.setText(" Clear")
         self.clear_button.setIcon(self.clear_icon)
-        self.clear_button.setIconSize(QSize(30, 30))
+        self.clear_button.setIconSize(ICON_SIZE)
         self.slider.valueChanged.connect(self.on_channel_slider_change)
         self.slider.hide()
         self.zoom_in_button.clicked.connect(self.zoom_in)
         self.zoom_out_button.clicked.connect(self.zoom_out)
-
-
-
 
 
     def on_channel_slider_change(self, value):
@@ -186,7 +197,7 @@ class Channel:
                 self.is_plotting = False
                 self.timer.stop()
                 self.play_button.setIcon(self.rewind_icon)
-                self.play_button.setIconSize(QSize(30, 30))
+                self.play_button.setIconSize(ICON_SIZE)
 
     # def get_stats(self, index):
     #     signal = self.signals[index]
@@ -197,7 +208,7 @@ class Channel:
         if len(self.signals_list) == 0:
             # self.play_button.setText('Play')
             self.play_button.setIcon(self.play_icon)
-            self.play_button.setIconSize(QSize(30, 30))
+            self.play_button.setIconSize(ICON_SIZE)
         else:
             try:
                 if(self.data_index >= len(self.x_data)):
@@ -205,13 +216,13 @@ class Channel:
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
                    self.play_button.setIcon(self.pause_icon)
-                   self.play_button.setIconSize(QSize(30, 30))
+                   self.play_button.setIconSize(ICON_SIZE)
                    self.slider.hide()
                 elif(self.is_plotting):
                    self.is_plotting = False
                    self.timer.stop()  # Update every 1 ms
                    self.play_button.setIcon(self.play_icon)
-                   self.play_button.setIconSize(QSize(30, 30))
+                   self.play_button.setIconSize(ICON_SIZE)
                    self.slider.show()
                    self.slider.setMinimum(0)
                    self.slider.setMaximum(int(self.x_data[self.data_index]*100))
@@ -223,7 +234,7 @@ class Channel:
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
                    self.play_button.setIcon(self.pause_icon)
-                   self.play_button.setIconSize(QSize(30, 30))
+                   self.play_button.setIconSize(ICON_SIZE)
                    self.slider.hide()
             except Exception:
                 QMessageBox.warning(self.app, "Warning", "Select the data first!")
@@ -256,7 +267,7 @@ class Channel:
         self.is_plotting = False
         self.timer.stop()  # Update every 1 ms
         self.play_button.setIcon(self.play_icon)
-        self.play_button.setIconSize(QSize(30, 30))
+        self.play_button.setIconSize(ICON_SIZE)
         # reset x, y asix
         self.on_channel_slider_change(1)
         # self.initialize_signals_slots()
