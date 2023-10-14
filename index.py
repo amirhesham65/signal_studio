@@ -283,7 +283,7 @@ class MainWindow(uiclass, baseclass):
         <html>
         <head>
             <style>
-                /* Add your CSS styling here */
+                /* CSS */
             </style>
         </head>
         <body>
@@ -300,7 +300,7 @@ class MainWindow(uiclass, baseclass):
         rendered_template = template.render(img_filenames=img_filenames, combined_statistics=combined_statistics, channel_name="Channel 1")
 
         config = pdfkit.configuration(wkhtmltopdf="wkhtmltopdf\\bin\\wkhtmltopdf.exe")
-        pdfkit.from_string(rendered_template, "Channel 2 Report.pdf", configuration=config, options={"enable-local-file-access": ""}) 
+        pdfkit.from_string(rendered_template, "Channel 1 Report.pdf", configuration=config, options={"enable-local-file-access": ""}) 
 
 
     def export_pdf_dynamic_ch2(self):
@@ -317,7 +317,7 @@ class MainWindow(uiclass, baseclass):
         <html>
         <head>
             <style>
-                /* Add your CSS styling here */
+                /* CSS */
             </style>
         </head>
         <body>
@@ -352,7 +352,7 @@ class MainWindow(uiclass, baseclass):
             <html>
             <head>
                 <style>
-                    /* Add your CSS styling here */
+                    /* CSS */
                 </style>
             </head>
             <body>
