@@ -3,7 +3,7 @@ from PyQt6.QtGui import *
 from PyQt6.QtWidgets import *
 from PyQt6.QtCore import QTimer, Qt, QSize
 import pyqtgraph as pg
-from models.channel import Channel
+from models.channel import Channel, ICON_SIZE
 import pdfkit
 import jinja2
 from io import BytesIO
@@ -16,6 +16,7 @@ class MainWindow(uiclass, baseclass):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowTitle("Signal Studio")
 
         self.timer_1 = QTimer(self)
         self.timer_2 = QTimer(self)
@@ -40,7 +41,10 @@ class MainWindow(uiclass, baseclass):
             speed_button=self.speed_button_1,
             clear_button=self.clear_button_1,
             timer=self.timer_1,
-            signals_list=self.signals_list_1
+            signals_list=self.signals_list_1,
+            zoom_in_button= self.zoom_in_button_1,
+            zoom_out_button= self.zoom_out_button_1,
+            snap_button=self.snapshot_button_1
         )
 
         self.channel_2 = Channel(
@@ -51,20 +55,23 @@ class MainWindow(uiclass, baseclass):
             speed_button=self.speed_button_2,
             clear_button=self.clear_button_2,
             timer=self.timer_2,
-            signals_list=self.signals_list_2
+            signals_list=self.signals_list_2,
+            zoom_in_button= self.zoom_in_button_2,
+            zoom_out_button= self.zoom_out_button_2,
+            snap_button=self.snapshot_button_2
         )
 
         self.initialize_signals_slots()
         self.sync_button.clicked.connect(self.sync_channels)
-        self.sync_button.setText("")
+        self.sync_button.setText(" Sync")
         self.sync_button.setIcon(self.sync_icon)
-        self.sync_button.setIconSize(QSize(30, 30))
+        self.sync_button.setIconSize(ICON_SIZE)
         # Prevent zooming and paning
         self.widget.setMouseEnabled(x=False, y=False)
         self.widget_2.setMouseEnabled(x=False, y=False)
         # hide speed buttons (real time signal)
-        self.speed_button_1.hide()
-        self.speed_button_2.hide()
+        # self.speed_button_1.hide()
+        # self.speed_button_2.hide()
 
 
     def initialize_signals_slots(self):
@@ -125,7 +132,7 @@ class MainWindow(uiclass, baseclass):
 
         self.channel_1.plot_widget.clear()
         self.channel_1.plot_widget.plot(updated_x_data, updated_y_data)
-        self.channel_2._signal_to_channel(target_signal)
+        self.channel_2.render_signal_to_channel(target_signal)
         # self.channel_2.signals.append(target_signal)
         # Add signals to channel list
         # item = QListWidgetItem(target_signal.title)
@@ -188,6 +195,9 @@ class MainWindow(uiclass, baseclass):
             self.channel_2.play_button.hide()
             self.channel_2.clear_button.hide()
             self.channel_2.speed_button.hide()
+            self.channel_2.zoom_in_button.hide()
+            self.channel_2.zoom_out_button.hide()
+            self.channel_2.speed_button.hide()
             self.channel_2.slider.hide()
 
             # trigger both channels with channel 1 controls
@@ -198,41 +208,45 @@ class MainWindow(uiclass, baseclass):
             self.actionPlay_Pause_2.setVisible(False)
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
+            self.sync_button.setText(" Unsync")
             self.sync_button.setIcon(self.unsync_icon)
-            self.sync_button.setIconSize(QSize(30, 30))
+            self.sync_button.setIconSize(ICON_SIZE)
             
             #Sync coresponding to channel 1
             self.channel_2.data_index = self.channel_1.data_index
         else:
             self.channel_2.play_button.show()
             self.channel_2.clear_button.show()
-            # self.channel_2.speed_button.show()
+            self.channel_2.zoom_in_button.show()
+            self.channel_2.zoom_out_button.show()
+            self.channel_2.speed_button.show()
             self.actionPlay_Pause.setVisible(True)
             self.actionPlay_Pause_2.setVisible(True)
             self.clear_signal_ch1.setVisible(False)
             self.clear_signal_ch2.setVisible(False)
             self.sync_button.setIcon(self.sync_icon)
-            self.sync_button.setIconSize(QSize(30, 30))
+            self.sync_button.setIconSize(ICON_SIZE)
 
 
 
     def export_pdf(self):
-        # Render the PlotWidgets to the image file
-        img_filename_1 = tempfile.mktemp(suffix=".png")
-        self.widget.grab().save(img_filename_1, format="PNG")
-        img_filename_2 = tempfile.mktemp(suffix=".png")
-        self.widget_2.grab().save(img_filename_2, format="PNG")
+        img_filename = tempfile.mktemp(suffix=".png")
+        
+        # Render the PlotWidget to the image file
+        self.widget.grab().save(img_filename, format="PNG")
+        # img = self.widget.grab()
+
         # Render HTML template
         templateLoader = jinja2.FileSystemLoader(searchpath="./")
         templateEnv = jinja2.Environment(loader=templateLoader)
         TEMPLATE_FILE = "template.html"
         template = templateEnv.get_template(TEMPLATE_FILE)
-        context = {"plot1": img_filename_1 , 'plot2' : img_filename_2}
+        context = {"plot": img_filename}
         outputText = template.render(
             context
         )
-        config = pdfkit.configuration(wkhtmltopdf="wkhtmltopdf\\bin\\wkhtmltopdf.exe")
-        pdfkit.from_string(outputText, "out.pdf", configuration=config, options={"enable-local-file-access": ""},css = 'template.css') 
+        config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+        pdfkit.from_string(outputText, "out.pdf", configuration=config, options={"enable-local-file-access": ""}) 
 
     
 
