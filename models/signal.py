@@ -12,17 +12,16 @@ class Signal:
         self.hidden = False
 
     def get_statistics(self, index):
-        start = index - 360
-        start = int(len(self.x_vec) // self.x_vec[-1])
-        self.y_vec = self.y_vec[start:index]
-        self.x_vec = self.x_vec[start:index]
-        mean = np.mean(self.y_vec)
-        median = np.median(self.y_vec)
-        std = np.std(self.y_vec)
-        # mode = stats.mode(self.y_vec)
-        max_value = max(self.y_vec)
-        min_value = min(self.x_vec)
+        start = max(index - 360, 0)
+        y_vec = self.y_vec[start:index]
+        mean = np.mean(y_vec)
+        median = np.median(y_vec)
+        std = np.std(y_vec)
+        max_value = max(y_vec)
+        min_value = min(y_vec)
         return mean, median, std, max_value, min_value
+
+
 
 
 class SignalColor(Enum):
