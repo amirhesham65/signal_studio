@@ -24,7 +24,8 @@ class Channel:
         self.sync = False
         self.curves = []
         self.data_index = 0
-
+        self.largest_x_data = [0]
+        self.largest_y_data = []
         # Connecting widgets
         
         self.plot_widget = plot_widget
@@ -154,6 +155,9 @@ class Channel:
         self.signals.append(signal)
         self.x_data.extend(signal.x_vec)
         self.y_data.extend(signal.y_vec)
+        if signal.x_vec[-1] >= self.largest_x_data[-1]:
+            self.largest_x_data = signal.x_vec
+            self.largest_y_data = signal.y_vec
         pen = pg.mkPen(color=signal.color.value)
         curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
         self.curves.append(curve)
@@ -177,25 +181,29 @@ class Channel:
         # Initialize the slider with the right values
         _, x_limit_max = curve.dataBounds(0)
         self.slider.setMinimum(1)
-        self.slider.setMaximum(int(x_limit_max*100))
+
+        self.slider.setMaximum(int(self.largest_x_data[-1]*100))
     
     def update_plot(self):
        if self.is_plotting:
-            if self.data_index < len(self.x_data):
-                x_data = self.x_data[:self.data_index + 1]
-                y_data = self.y_data[:self.data_index + 1]
+            if self.data_index < len(self.largest_x_data):
+                x_data = self.largest_x_data[:self.data_index + 1]
+                # y_data = self.largest_y_data[:self.data_index + 1]
                 if(x_data[-1] < 1):
                     self.plot_widget.setXRange(0, 1)
                 else:
                     self.plot_widget.setXRange(x_data[-1]-1, x_data[-1])
-                self.slider.setValue(int(x_data[-1]*100))
+                self.slider.setValue(int(self.largest_x_data[-1]*100))
                 self.slider.repaint()
-                self.curve.setData(x_data, y_data)
+                for i in range(len(self.curves)):
+                    self.curves[i].setData(self.signals[i].x_vec[:self.data_index + 1], self.signals[i].y_vec[:self.data_index + 1])
+                # self.curve.setData(x_data, y_data)
                 self.data_index += 1
 
             else:
                 self.is_plotting = False
                 self.timer.stop()
+                self.play_button.setText(" Rewind")
                 self.play_button.setIcon(self.rewind_icon)
                 self.play_button.setIconSize(ICON_SIZE)
 
@@ -206,33 +214,36 @@ class Channel:
 
     def play_pause(self):
         if len(self.signals_list) == 0:
-            # self.play_button.setText('Play')
+            self.play_button.setText('Play')
             self.play_button.setIcon(self.play_icon)
             self.play_button.setIconSize(ICON_SIZE)
         else:
             try:
-                if(self.data_index >= len(self.x_data)):
+                if(self.data_index >= len(self.largest_x_data)):
                    self.data_index = 0
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
+                   self.play_button.setText(" Pause")
                    self.play_button.setIcon(self.pause_icon)
                    self.play_button.setIconSize(ICON_SIZE)
                    self.slider.hide()
                 elif(self.is_plotting):
                    self.is_plotting = False
                    self.timer.stop()  # Update every 1 ms
+                   self.play_button.setText(" Play")
                    self.play_button.setIcon(self.play_icon)
                    self.play_button.setIconSize(ICON_SIZE)
                    self.slider.show()
                    self.slider.setMinimum(0)
-                   self.slider.setMaximum(int(self.x_data[self.data_index]*100))
-                   self.slider.setValue(int(self.x_data[self.data_index]*100))
+                   self.slider.setMaximum(int(self.largest_x_data[self.data_index]*100))
+                   self.slider.setValue(int(self.largest_x_data[self.data_index]*100))
                    self.slider.repaint()
                    
                    
                 else:
                    self.is_plotting = True
                    self.timer.start(floor(8/self.speed))  # Update every 1 ms
+                   self.play_button.setText(" Pause")
                    self.play_button.setIcon(self.pause_icon)
                    self.play_button.setIconSize(ICON_SIZE)
                    self.slider.hide()
@@ -278,6 +289,7 @@ class Channel:
         self.x_data = []
         self.y_data = []
         self.data_index = 0
+        self.curves = []
         
          # check if synced
         if self.sync:
@@ -286,19 +298,29 @@ class Channel:
 
     def remove_signal(self, index):
 
-        data_x_y_pairs = set(list(zip(self.x_data, self.y_data)))
-        deleted_x_y_pairs = set(list(zip(self.signals[index].x_vec, self.signals[index].y_vec)))
-        updated_pairs = [pair for pair in data_x_y_pairs if pair not in deleted_x_y_pairs]
+        # data_x_y_pairs = set(list(zip(self.x_data, self.y_data)))
+        # deleted_x_y_pairs = set(list(zip(self.signals[index].x_vec, self.signals[index].y_vec)))
+        # updated_pairs = [pair for pair in data_x_y_pairs if pair not in deleted_x_y_pairs]
 
-        updated_x_data = [pair[0] for pair in updated_pairs]
-        updated_y_data = [pair[1] for pair in updated_pairs]
-        self.x_data = updated_x_data
-        self.y_data = updated_y_data
+        # updated_x_data = [pair[0] for pair in updated_pairs]
+        # updated_y_data = [pair[1] for pair in updated_pairs]
+        # self.x_data = updated_x_data
+        # self.y_data = updated_y_data
         
-        self.plot_widget.clear()
-        self.plot_widget.plot(updated_x_data, updated_y_data)
+        # self.plot_widget.clear()
+        # self.plot_widget.plot(updated_x_data, updated_y_data)
+        pen = pg.mkPen(color=SignalColor.TRANSPARENT.value)
+        # self.curves[index] = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+        self.curves[index].setPen(pen)
         self.signals.pop(index)
+        self.curves.pop(index)
         self.signals_list.takeItem(index)
+        self.largest_x_data = [0]
+        self.largest_y_data = []
+        for signal in self.signals:
+            if signal.x_vec[-1] > self.largest_x_data[-1]:
+                self.largest_x_data = signal.x_vec
+                self.largest_y_data = signal.y_vec
 
     def hide_unhide(self, index):
         signal = self.signals[index];
@@ -309,17 +331,15 @@ class Channel:
             item.setBackground(QColor(*signal.color.value + (128,)))
             signal.last_drawn_index = self.data_index
             pen = pg.mkPen(color=SignalColor.TRANSPARENT.value)
-            self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+            # self.curves[index] = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
+            self.curves[index].setPen(pen)
 
         def unhide_signal(signal):
             self.signals_list.setCurrentRow(index)
             item = self.signals_list.currentItem()
             item.setBackground(QColor(*signal.color.value))
             pen = pg.mkPen(color=signal.color.value)
-            if signal.last_drawn_index == 0:
-                self.curve = self.plot_widget.plot(signal.x_vec, signal.y_vec, pen=pen)
-            else:
-                self.curve = self.plot_widget.plot(signal.x_vec[:self.data_index], signal.y_vec[:self.data_index], pen=pen)
+            self.curves[index].setPen(pen)
 
         if signal.hidden:
             hide_signal(signal)
