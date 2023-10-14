@@ -26,6 +26,7 @@ class Channel:
         self.data_index = 0
         self.largest_x_data = [0]
         self.largest_y_data = []
+        self.snapshots = []
         # Connecting widgets
         
         self.plot_widget = plot_widget
@@ -207,9 +208,9 @@ class Channel:
                 self.play_button.setIcon(self.rewind_icon)
                 self.play_button.setIconSize(ICON_SIZE)
 
-    # def get_stats(self, index):
-    #     signal = self.signals[index]
-    #     print(signal.get_statistics(self.data_index))
+    def get_stats(self, index):
+        signal = self.signals[index]
+        return(signal.get_statistics(self.data_index))
 
 
     def play_pause(self):

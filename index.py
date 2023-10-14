@@ -72,6 +72,7 @@ class MainWindow(uiclass, baseclass):
         # hide speed buttons (real time signal)
         # self.speed_button_1.hide()
         # self.speed_button_2.hide()
+        self.snapshots = []
 
 
     def initialize_signals_slots(self):
@@ -79,12 +80,15 @@ class MainWindow(uiclass, baseclass):
         self.import_signal_ch1.triggered.connect(self.channel_1.import_signal_channel)
         self.actionPlay_Pause.triggered.connect(self.channel_1.play_pause)
         self.hide_channel_1_chk.stateChanged.connect(self.toggle_channel_1)
-        self.actionExport_signal.triggered.connect(self.export_pdf)
+        self.actionExport_signal.triggered.connect(self.export_pdf_dynamic_ch1)
+        self.snapshot_button_1.clicked.connect(self.snapshot_ch_1)
 
         # Channel 2
         self.import_signal_ch2.triggered.connect(self.channel_2.import_signal_channel) 
         self.actionPlay_Pause_2.triggered.connect(self.channel_2.play_pause)
         self.hide_channel_2_chk.stateChanged.connect(self.toggle_channel_2)
+        self.actionExport_signal_2.triggered.connect(self.export_pdf_dynamic_ch2)
+        self.snapshot_button_2.clicked.connect(self.snapshot_ch_2)
 
 
     def toggle_channel_1(self, state):
@@ -229,24 +233,143 @@ class MainWindow(uiclass, baseclass):
 
 
 
-    def export_pdf(self):
-        img_filename = tempfile.mktemp(suffix=".png")
-        
-        # Render the PlotWidget to the image file
+    def snapshot_ch_1(self):
+        statistics = []
+        for index in range(self.channel_1.signals_list.count()):
+            mean, median, std, max_value, min_value = self.channel_1.get_stats(index)
+            statistics.append(f"Signal {index+1} Statistics:")
+            statistics.append(f"Mean: {mean}")
+            statistics.append(f"Median: {median}")
+            statistics.append(f"Standard Deviation: {std}")
+            statistics.append(f"Max Value: {max_value}")
+            statistics.append(f"Min Value: {min_value}")
+            statistics.append("")
+        img_filename = tempfile.mktemp(suffix=f"_{index}.png")
         self.widget.grab().save(img_filename, format="PNG")
-        # img = self.widget.grab()
+        self.channel_1.snapshots.append(('Channel 1',img_filename, statistics))
+        self.snapshots.append(('Channel 1',img_filename, statistics))
+        
+    def snapshot_ch_2(self):
+        statistics = []
+        for index in range(self.channel_2.signals_list.count()):
+            mean, median, std, max_value, min_value = self.channel_2.get_stats(index)
+            statistics.append(f"Signal {index+1} Statistics:")
+            statistics.append(f"Mean: {mean}")
+            statistics.append(f"Median: {median}")
+            statistics.append(f"Standard Deviation: {std}")
+            statistics.append(f"Max Value: {max_value}")
+            statistics.append(f"Min Value: {min_value}")
+            statistics.append("")
+        img_filename = tempfile.mktemp(suffix=f"_{index}.png")
+        self.widget.grab().save(img_filename, format="PNG")
+        self.channel_2.snapshots.append(('Channel 2',img_filename, statistics))
+        self.snapshots.append(('Channel 2',img_filename, statistics))
+        
 
-        # Render HTML template
-        templateLoader = jinja2.FileSystemLoader(searchpath="./")
-        templateEnv = jinja2.Environment(loader=templateLoader)
-        TEMPLATE_FILE = "template.html"
-        template = templateEnv.get_template(TEMPLATE_FILE)
-        context = {"plot": img_filename}
-        outputText = template.render(
-            context
-        )
-        config = pdfkit.configuration(wkhtmltopdf="C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
-        pdfkit.from_string(outputText, "out.pdf", configuration=config, options={"enable-local-file-access": ""}) 
+
+
+
+    def export_pdf_dynamic_ch1(self):
+        #loop over snapshots in channel 1 and export them to pdf
+        img_filenames = []
+        combined_statistics = []
+        for snapshot in self.channel_1.snapshots:
+            img_filenames.append(snapshot[1])
+            combined_statistics.append("<br>".join(snapshot[2]))
+        
+
+        template_str = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                /* Add your CSS styling here */
+            </style>
+        </head>
+        <body>
+            <h1>{{ channel_name }} Report</h1>
+            {% for index in range(img_filenames|length) %}
+                <img src="{{ img_filenames[index] }}" alt="Plot Image">
+                <p>{{ combined_statistics[index] | safe }}</p>
+            {% endfor %}
+        </body>
+        </html>
+        """
+
+        template = jinja2.Template(template_str)
+        rendered_template = template.render(img_filenames=img_filenames, combined_statistics=combined_statistics, channel_name="Channel 1")
+
+        config = pdfkit.configuration(wkhtmltopdf="wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+        pdfkit.from_string(rendered_template, "Channel 2 Report.pdf", configuration=config, options={"enable-local-file-access": ""}) 
+
+
+    def export_pdf_dynamic_ch2(self):
+        #loop over snapshots in channel 2 and export them to pdf
+        img_filenames = []
+        combined_statistics = []
+        for snapshot in self.channel_2.snapshots:
+            img_filenames.append(snapshot[1])
+            combined_statistics.append("<br>".join(snapshot[2]))
+        
+
+        template_str = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <style>
+                /* Add your CSS styling here */
+            </style>
+        </head>
+        <body>
+            <h1>{{ channel_name }} Report</h1>
+            {% for index in range(img_filenames|length) %}
+                <img src="{{ img_filenames[index] }}" alt="Plot Image">
+                <p>{{ combined_statistics[index] | safe }}</p>
+            {% endfor %}
+        </body>
+        </html>
+        """
+
+        template = jinja2.Template(template_str)
+        rendered_template = template.render(img_filenames=img_filenames, combined_statistics=combined_statistics, channel_name="Channel 2")
+
+        config = pdfkit.configuration(wkhtmltopdf="wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+        pdfkit.from_string(rendered_template, "Channel 2 Report.pdf", configuration=config, options={"enable-local-file-access": ""}) 
+
+
+        def export_pdf_dynamic(self):
+            channel_name = []
+            img_filenames = []
+            combined_statistics = []
+            for snapshot in self.snapshots:
+                channel_name.append(snapshot[0])
+                img_filenames.append(snapshot[1])
+                combined_statistics.append("<br>".join(snapshot[2]))
+            
+
+            template_str = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    /* Add your CSS styling here */
+                </style>
+            </head>
+            <body>
+                {% for index in range(img_filenames|length) %}
+                    <h1>{{ channel_name }}</h1>
+                    <img src="{{ img_filenames[index] }}" alt="Plot Image">
+                    <p>{{ combined_statistics[index] | safe }}</p>
+                {% endfor %}
+            </body>
+            </html>
+            """
+
+            template = jinja2.Template(template_str)
+            rendered_template = template.render(img_filenames=img_filenames, combined_statistics=combined_statistics, channel_name= channel_name)
+
+            config = pdfkit.configuration(wkhtmltopdf="wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+            pdfkit.from_string(rendered_template, "Report.pdf", configuration=config, options={"enable-local-file-access": ""}) 
 
     
 

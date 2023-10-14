@@ -1,3 +1,0 @@
-outputText = template.render(
-        #     context
-        # )
