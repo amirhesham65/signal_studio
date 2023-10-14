@@ -229,7 +229,6 @@ class MainWindow(uiclass, baseclass):
 
 
     def export_pdf(self):
-        # Render the PlotWidget to the image file
         img_filename = tempfile.mktemp(suffix=".png")
         
         # Render the PlotWidget to the image file

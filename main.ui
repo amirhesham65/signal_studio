@@ -492,6 +492,9 @@ QListWidget {
       <item>
        <widget class="QWidget" name="channel_1_container" native="true">
         <layout class="QVBoxLayout" name="channel_1_layout">
+         <property name="topMargin">
+          <number>0</number>
+         </property>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="1,4">
            <item>
