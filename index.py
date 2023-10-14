@@ -16,6 +16,7 @@ class MainWindow(uiclass, baseclass):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
+        self.setWindowTitle("Signal Studio")
 
         self.timer_1 = QTimer(self)
         self.timer_2 = QTimer(self)
