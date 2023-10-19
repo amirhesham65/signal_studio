@@ -582,25 +582,6 @@ QListWidget {
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="clear_button_1">
-                 <property name="minimumSize">
-                  <size>
-                   <width>120</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>150</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Clear</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
                 <spacer name="horizontalSpacer">
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
@@ -706,7 +687,7 @@ padding-right: 10px;</string>
        <widget class="QWidget" name="channel_2_container" native="true">
         <layout class="QVBoxLayout" name="channel_1_layout_2">
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,4">
+          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,0">
            <item>
             <widget class="QListWidget" name="signals_list_2">
              <property name="sizePolicy">
@@ -779,25 +760,6 @@ padding-right: 10px;</string>
                  </property>
                  <property name="text">
                   <string>Play</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="clear_button_2">
-                 <property name="minimumSize">
-                  <size>
-                   <width>120</width>
-                   <height>50</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>150</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>Clear</string>
                  </property>
                 </widget>
                </item>
@@ -896,7 +858,7 @@ padding-right: 10px;</string>
      <x>0</x>
      <y>0</y>
      <width>917</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -904,7 +866,6 @@ padding-right: 10px;</string>
      <string>Channel 1</string>
     </property>
     <addaction name="import_signal_ch1"/>
-    <addaction name="actionExport_signal"/>
     <addaction name="actionPlay_Pause"/>
     <addaction name="clear_signal_ch1"/>
    </widget>
@@ -913,12 +874,19 @@ padding-right: 10px;</string>
      <string>Channel 2</string>
     </property>
     <addaction name="import_signal_ch2"/>
-    <addaction name="actionExport_signal_2"/>
     <addaction name="actionPlay_Pause_2"/>
     <addaction name="clear_signal_ch2"/>
    </widget>
+   <widget class="QMenu" name="menuReport">
+    <property name="title">
+     <string>Report</string>
+    </property>
+    <addaction name="generate_Report"/>
+    <addaction name="actionClear_Snapshots"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuChannel_2"/>
+   <addaction name="menuReport"/>
   </widget>
   <action name="import_signal_ch1">
    <property name="text">
@@ -958,6 +926,16 @@ padding-right: 10px;</string>
   <action name="clear_signal_ch2">
    <property name="text">
     <string>Clear</string>
+   </property>
+  </action>
+  <action name="generate_Report">
+   <property name="text">
+    <string>Generate Report</string>
+   </property>
+  </action>
+  <action name="actionClear_Snapshots">
+   <property name="text">
+    <string>Clear Snapshots</string>
    </property>
   </action>
  </widget>
